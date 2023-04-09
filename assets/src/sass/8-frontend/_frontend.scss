@@ -1,0 +1,334 @@
+/* Including parts. */
+@import "navmenu";
+// @import "elementor";
+@import "icons";
+@import "map";
+
+$primaryColor: #FFCF02;
+$primaryColorb4: #ffd102b4;
+$primaryColor1f: #FFCF021f;
+$primaryColor0d: #ffcf020d;
+
+/* General Settings */
+.modal-backdrop.fade.show {
+  display: none;
+}
+.input-group {
+  span[id^="basic-editopen-"] {border-radius: 0 5px 5px 0 !important;}
+  &.input-group .input-group-text[id^=basic-pre-addons] {
+    @include mq($until: 500px) {
+      display: none;
+    }
+    @include mq($until: 550px) {
+      max-width: 180px;
+      overflow: hidden;
+    }
+  }
+}
+.direct-download-btn {
+  display: block;
+  width: 50px;
+  height: 30px;
+  svg.icon-32 {
+    width: 25px;
+    height: 25px;
+    display: block;
+    margin: auto;
+    margin-top: 3px;
+  }
+}
+.input-group-text.password-toggle:not(.showing) .shown {display: none;}
+.input-group-text.password-toggle.showing .hiden {display: none;}
+
+div.wpforms-container-full .wpforms-form .wpforms-field {
+  margin-left: auto;
+  padding: 10px;
+  input, select {
+    min-width: 100%;
+    width: 100%;
+    border-radius: 5px !important;
+    border: .5px solid #8d8d8d !important;
+    padding: 5px 10px;
+    margin: auto;
+  }
+  textarea{
+    height: 200px;
+  }
+  .wpforms-field-label {
+    color: #333;
+    font-size: 16px;
+    margin-bottom: 5px;
+    text-decoration: none;
+  }
+  &.wpforms-field-name {
+    width: 100%;
+    display: block;
+    .wpforms-field-row {
+      display: block;
+      min-width: 100%;
+      // .wpforms-field-row-block {
+      //   padding: 10px !important;
+      //   margin-left: 0 !important;
+      // }
+    }
+  }
+}
+.profile-image-preview {
+  height: 0;
+  opacity: 0;
+  width: 200px;
+  margin: auto;
+  overflow: hidden;
+  visibility: hidden;
+  transition: all .7s ease;
+  &.active {
+    height: 200px;
+    opacity: 1;
+    visibility: visible;
+    img {
+      height: 100%;
+      width: 100%;
+      border: 1px solid #ddd;
+      border-radius: 5px;
+      box-shadow: 2px 0 5px #ddd;
+    }
+  }
+}
+.fwp-body {
+  .card .card-header {
+    align-items: center;
+  }
+}
+
+.container-fluid {
+  .cv-download {
+    top: unset;
+    position: relative;
+    margin-top: 30px;
+    width: 100%;
+    .row > div {
+      justify-content: space-around;
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      align-content: center;
+      .btn:not(:last-child) {
+        margin-bottom: 5px;
+      }
+    }
+  }
+  .add-edu .all-edus .new-edu:not(:last-child) {
+    padding-bottom: 15px;
+    border: none;
+    border-bottom: 1px solid #ddd;
+  }
+  #profile-image-upload {
+    position: absolute;
+    font-size: 50px;
+    opacity: 0;
+    right: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    z-index: -1;
+  }
+}
+.d-none {display: none;}
+
+.cv-container {
+  width: 800px;
+  padding: 40px;
+  background: #F1ECDA;
+  box-sizing: border-box;
+  color: #333;
+  font-family: 'Roboto Slab';
+  h1 {
+    font-size: 60px;
+    font-family: fantasy;
+  }
+}
+body {
+  // background: -webkit-linear-gradient(left, #3931af, #00c6ff);
+  p {
+    color: inherit;
+  }
+}
+.cv-prev {
+  &.is-fixed {
+    position: fixed;
+    z-index: 9999;
+    top: 20px;
+    left: 20px;
+    width: calc(100vw - 40px);
+    height: auto;
+    overflow: auto;
+    .blog_thumbnail {
+      width: 100%;
+      height: auto;
+      canvas {
+        display: none;
+      }
+    }
+  }
+  + .cv-download {
+    position: fixed;
+    right: 20px;
+    left: unset;
+    width: calc(100vw - 100px);
+  }
+}
+.emp-profile {
+  padding: 3%;
+  margin-top: 3%;
+  margin-bottom: 3%;
+  border-radius: 0.5rem;
+  background: #fff;
+  max-width: 66.40625rem;
+  height: 85.9375rem;
+  padding: 4rem 0;
+
+  > form > .row {
+    padding: 0 4rem;
+  }
+
+  .profile-img {
+    text-align: center;
+
+    img {
+      height: 230px;
+      width: 200px;
+      border-radius: 100px 100px 0 0;
+      border: 1px solid #333;
+    }
+  }
+
+  .work-experience > h3 {
+    font-size: 1.5rem;
+    font-weight: 400;
+    margin-left: -15px;
+  }
+
+  .cv-header-left {
+    display: flex;
+    align-items: center;
+  }
+
+  /* The actual timeline (the vertical ruler) */
+  .timeline {
+    position: relative;
+    margin: 0 auto;
+    &::after {
+      content: '';
+      position: absolute;
+      width: 1px;
+      background-color: #333;
+      top: 20px;
+      bottom: 0;
+      left: 0;
+      margin-left: -5px;
+    }
+  }
+
+  /* tl-Container around content */
+  .tl-container {
+    padding: 10px 20px;
+    position: relative;
+    background-color: inherit;
+    /* width: 50%; */
+    &::after {
+      content: '';
+      position: absolute;
+      width: 15px;
+      height: 15px;
+      background-color: #333;
+      border: 4px solid #FF9F55;
+      top: 15px;
+      right: 0;
+      border: none;
+      border-radius: 50%;
+      z-index: 1;
+    }
+  }
+
+  /* Place the tl-container to the left */
+  .left {
+    left: 0;
+    &::before {
+      content: " ";
+      height: 0;
+      position: absolute;
+      top: 22px;
+      width: 0;
+      z-index: 1;
+      right: 30px;
+      border: medium solid #333;
+      border-width: 10px 0 10px 10px;
+      border-color: transparent transparent transparent #333;
+    }
+  }
+
+  /* Place the tl-container to the right */
+  /* .right {
+    left: 50%;
+  } */
+
+  /* Add arrows to the right tl-container (pointing left) */
+  .right::before {
+    content: " ";
+    content: none;
+    height: 0;
+    position: absolute;
+    top: 22px;
+    width: 0;
+    z-index: 1;
+    left: 30px;
+    border: medium solid #333;
+    border-width: 10px 10px 10px 0;
+    border-color: transparent #333 transparent transparent;
+  }
+
+  /* Fix the circle for tl-containers on the right side */
+  .right::after {
+    left: -12px;
+  }
+
+  /* The actual content */
+  .content {
+    padding: unset;
+    background-color: white;
+    position: relative;
+    border-radius: 6px;
+
+    > *,
+    ul.list li {
+      font-size: 14px;
+      line-height: 18px;
+      font-weight: 700;
+      margin: auto;
+      color: #545454;
+      list-style: none;
+      position: relative;
+      padding-left: 1.5rem;
+    }
+    
+    ul.list li::before {
+      content: '';
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background-color: #FF9F55;
+      position: absolute;
+      left: 0.25rem;
+      top: 0.75rem;
+    }
+  }
+  .add-blk.btn {
+    margin: auto;
+    margin-top: 20px;
+  }
+}
+.block-container, .all-edus, .all-exps {
+  position: relative;
+  display: block;
+  overflow: hidden;
+}
