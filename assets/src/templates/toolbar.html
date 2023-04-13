@@ -1,0 +1,256 @@
+<div class="cvbuilderscreen">
+  <div class="formscreen">
+    <div class="formscreen__wrapper">
+      <!-- //  -->
+    </div>
+  </div>
+  <div class="editescreen">
+    <div class="editescreen__wrapper">
+      <div class="editescreen__card">
+        <canvas></canvas>
+        <!-- svg -->
+      </div>
+    </div>
+  </div>
+  <div class="tool-bar">
+    <div class="choose-templates">
+      <button class="templates__single" data-font="" data-type="cvTemplate">
+        <div class="templates__card">
+          <div class="templates__imgwrap">
+            <img src="https://www.jobseeker.com/api/documents/template-preview/resume/en/6b4e13bd-4f63-452b-98b9-36f8ab6a0bff" alt="">
+          </div>
+        </div>
+        <div class="templates__subtitle">Chrono</div>
+      </button>
+      <button class="templates__single" data-font="" data-type="cvTemplate">
+        <div class="templates__card">
+          <div class="templates__imgwrap">
+            <img src="https://www.jobseeker.com/api/documents/template-preview/resume/en/6b4e13bd-4f63-452b-98b9-36f8ab6a0bff" alt="">
+          </div>
+        </div>
+        <div class="templates__subtitle">Chrono</div>
+      </button>
+      <button class="templates__single" data-font="" data-type="cvTemplate">
+        <div class="templates__card">
+          <div class="templates__imgwrap">
+            <img src="https://www.jobseeker.com/api/documents/template-preview/resume/en/6b4e13bd-4f63-452b-98b9-36f8ab6a0bff" alt="">
+          </div>
+        </div>
+        <div class="templates__subtitle">Chrono</div>
+      </button>
+      <button class="templates__single" data-font="" data-type="cvTemplate">
+        <div class="templates__card">
+          <div class="templates__imgwrap">
+            <img src="https://www.jobseeker.com/api/documents/template-preview/resume/en/6b4e13bd-4f63-452b-98b9-36f8ab6a0bff" alt="">
+          </div>
+        </div>
+        <div class="templates__subtitle">Chrono</div>
+      </button>
+    </div>
+    <div class="p-3">
+      <div class="toolbar__body">
+        <div class="toolbar__firstpicker">
+          <button class="toolbar__selectemplate" data-target=".choose-templates">
+            <span>
+              <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" stroke-width="0.2" stroke="currentColor" class="toolbar__svg"><path d="m19.98 2.459 1.54 1.544a1.57 1.57 0 0 1 0 2.215L6.23 21.542c-.609.61-1.6.61-2.21 0l-1.54-1.543a1.57 1.57 0 0 1 0-2.216L17.77 2.46a1.562 1.562 0 0 1 2.21 0zm-1.328.886L13.95 8.058l1.985 1.989 4.703-4.715a.316.316 0 0 0 0-.444l-1.54-1.543a.316.316 0 0 0-.445 0zM3.364 19.115l1.538 1.542c.125.121.32.121.446 0l9.703-9.725-1.985-1.99-9.702 9.726a.318.318 0 0 0 0 .447zM5.75 6.954h1.875c.344 0 .625.317.625.626 0 .38-.281.627-.625.627H5.75v1.88c0 .379-.281.626-.625.626a.606.606 0 0 1-.625-.627v-1.88H2.625A.605.605 0 0 1 2 7.58c0-.309.28-.626.625-.626H4.5v-1.88c0-.31.281-.626.625-.626s.625.316.625.627zm13.125 7.517c.344 0 .625.317.625.662v1.88h1.875a.628.628 0 0 1 0 1.252H19.5v1.88a.628.628 0 0 1-.625.626.628.628 0 0 1-.625-.627v-1.88h-1.875a.628.628 0 0 1 0-1.252h1.875v-1.88c0-.344.281-.66.625-.66zm-8.273-11.09h.773c.262 0 .477.213.477.44 0 .3-.215.512-.477.512h-.773v.742c0 .298-.215.511-.477.511s-.477-.213-.477-.511v-.742h-.773c-.262 0-.477-.213-.477-.511 0-.228.215-.441.477-.441h.773v-.812c0-.228.215-.44.477-.44s.477.212.477.44z"></path></svg>
+            </span>
+            <span>
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="toolbar__dropicon"><path stroke-linecap="round" stroke-linejoin="round" d="m19.5 8.25-7.5 7.5-7.5-7.5"></path></svg>
+            </span>
+          </button>
+        </div>
+        <div class="toolbar__middlelems">
+          <div class="toolbar__middlesingle">
+            <button id="font-select">
+              <span>
+                <svg viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg" stroke-width="0.5" stroke="currentColor" class="toolbar__svg"><g clip-path="url(#fontCase_svg__a)" transform="matrix(.95652 0 0 .9937 .748 .572)"><path d="M7.124 3.784c-.17-.446-.903-.446-1.073 0L.302 18.765a.577.577 0 0 0 1.074.414l1.627-4.24h7.172l1.627 4.24a.574.574 0 1 0 1.073-.414zM3.446 13.789l3.143-8.19 3.143 8.19Zm19.243-5.765c-.318 0-.543.258-.543.576v1.017c-.844-.968-2.07-1.593-3.418-1.593-2.536 0-4.567 2.067-4.567 4.61v2.313c0 2.543 2.063 4.604 4.567 4.604 1.38 0 2.606-.626 3.45-1.593v1.016c-.064.316.194.575.51.575.317 0 .576-.259.576-.607V8.599a.577.577 0 0 0-.575-.575zm-.575 6.915c0 1.906-1.548 3.457-3.418 3.457-1.903 0-3.418-1.551-3.418-3.458v-2.303c0-1.907 1.548-3.458 3.418-3.458 1.903 0 3.418 1.551 3.418 3.458z"></path></g><defs><clipPath id="fontCase_svg__a"><path fill="#fff" transform="translate(.264)" d="M0 0h23v23H0z"></path></clipPath></defs></svg>
+              </span>
+              <span>
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="toolbar__dropicon"><path stroke-linecap="round" stroke-linejoin="round" d="m19.5 8.25-7.5 7.5-7.5-7.5"></path></svg>
+              </span>
+            </button>
+            <div class="dropupmenu">
+              <div class="dropupmenu__menubody">
+                <div class="dropupmenu__menutitle">Font</div>
+                <button class="dropupmenu__single" data-font="" data-type="fontFamily">
+                  <span class="dropupmenu__leftspacer"></span>
+                  <div class="dropupmenu__font">Arial</div>
+                </button>
+                <button class="dropupmenu__single" data-font="" data-type="fontFamily">
+                  <span class="dropupmenu__leftspacer"></span>
+                  <div class="dropupmenu__font" style="font-family: LiberationSans;">Arial</div>
+                </button>
+                <button class="dropupmenu__single" data-font="" data-type="fontFamily">
+                  <span class="dropupmenu__leftspacer"></span>
+                  <div class="dropupmenu__font" style="font-family: LiberationSans;">Courier New</div>
+                </button>
+                <button class="dropupmenu__single" data-font="" data-type="fontFamily">
+                  <span class="dropupmenu__leftspacer"></span>
+                  <div class="dropupmenu__font" style="font-family: LiberationSans;">Poppins</div>
+                </button>
+                <button class="dropupmenu__single" data-font="" data-type="fontFamily">
+                  <span class="dropupmenu__leftspacer"></span>
+                  <div class="dropupmenu__font" style="font-family: LiberationSans;">Times New Roman</div>
+                </button>
+                <button class="dropupmenu__single" data-font="" data-type="fontFamily">
+                  <span class="dropupmenu__leftspacer"></span>
+                  <div class="dropupmenu__font" style="font-family: LiberationSans;">Trebuchet</div>
+                </button>
+              </div>
+            </div>
+          </div>
+          <div class="toolbar__middlesingle">
+            <button id="font-size">
+              <span>
+                <svg viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg" stroke-width="0.5" stroke="currentColor" class="toolbar__svg"><g clip-path="url(#textSize_svg__a)" transform="matrix(.95652 0 0 .99379 .946 .571)"><path d="M.057 4.025v3.45a.576.576 0 0 0 1.15 0V4.6h5.175v13.8h-2.3a.577.577 0 0 0-.575.575c0 .316.259.575.575.575h5.75a.577.577 0 0 0 .575-.575.577.577 0 0 0-.575-.575h-2.3V4.6h5.175v2.875c0 .316.259.575.575.575a.577.577 0 0 0 .575-.575v-3.45a.576.576 0 0 0-.575-.575H.632a.575.575 0 0 0-.575.575zm11.5 6.9v2.3a.575.575 0 1 0 1.15 0V11.5h4.025v6.9h-1.725a.575.575 0 1 0 0 1.15h4.6a.575.575 0 1 0 0-1.15h-1.725v-6.9h4.025v1.725a.575.575 0 1 0 1.15 0v-2.3a.577.577 0 0 0-.575-.575h-10.35a.577.577 0 0 0-.575.575z"></path></g><defs><clipPath id="textSize_svg__a"><path fill="#fff" transform="translate(.057)" d="M0 0h23v23H0z"></path></clipPath></defs></svg>
+              </span>
+              <span>
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="toolbar__dropicon"><path stroke-linecap="round" stroke-linejoin="round" d="m19.5 8.25-7.5 7.5-7.5-7.5"></path></svg>
+              </span>
+            </button>
+            <div class="dropupmenu">
+              <div class="dropupmenu__menubody">
+                <div class="dropupmenu__menutitle">Font size</div>
+                <button class="dropupmenu__single" data-font="" data-type="fontFamily">
+                  <span class="dropupmenu__leftspacer"></span>
+                  <div class="dropupmenu__font">Arial</div>
+                </button>
+                <button class="dropupmenu__single" data-font="" data-type="fontFamily">
+                  <span class="dropupmenu__leftspacer"></span>
+                  <div class="dropupmenu__font" style="font-family: LiberationSans;">Arial</div>
+                </button>
+                <button class="dropupmenu__single" data-font="" data-type="fontFamily">
+                  <span class="dropupmenu__leftspacer"></span>
+                  <div class="dropupmenu__font" style="font-family: LiberationSans;">Courier New</div>
+                </button>
+                <button class="dropupmenu__single" data-font="" data-type="fontFamily">
+                  <span class="dropupmenu__leftspacer"></span>
+                  <div class="dropupmenu__font" style="font-family: LiberationSans;">Poppins</div>
+                </button>
+                <button class="dropupmenu__single" data-font="" data-type="fontFamily">
+                  <span class="dropupmenu__leftspacer"></span>
+                  <div class="dropupmenu__font" style="font-family: LiberationSans;">Times New Roman</div>
+                </button>
+                <button class="dropupmenu__single" data-font="" data-type="fontFamily">
+                  <span class="dropupmenu__leftspacer"></span>
+                  <div class="dropupmenu__font" style="font-family: LiberationSans;">Trebuchet</div>
+                </button>
+              </div>
+            </div>
+          </div>
+          <div class="toolbar__middlesingle">
+            <button id="line-height">
+              <span>
+                <svg viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg" stroke-width="0.2" stroke="currentColor" class="toolbar__svg"><path d="M8.154 6.403c.24.249.24.659 0 .908a.586.586 0 0 1-.863 0L5.243 5.195v13.61l2.048-2.117a.586.586 0 0 1 .863 0c.24.25.24.659 0 .908L5.098 20.81a.586.586 0 0 1-.863 0l-3.056-3.214a.665.665 0 0 1 0-.908.587.587 0 0 1 .864 0l2.013 2.117V5.195L2.043 7.31a.587.587 0 0 1-.864 0 .665.665 0 0 1 0-.908l3.056-3.215a.59.59 0 0 1 .863 0zm14.235-1.51c.336 0 .611.323.611.642 0 .39-.275.643-.611.643h-11c-.336 0-.611-.253-.611-.643 0-.319.275-.643.61-.643zm0 6.427c.336 0 .611.326.611.643 0 .39-.275.643-.611.643h-11c-.336 0-.611-.253-.611-.643 0-.317.275-.643.61-.643zm-11.611 7.108c0-.354.275-.643.61-.643h11c.337 0 .612.29.612.643 0 .353-.275.642-.611.642h-11c-.336 0-.611-.289-.611-.642z"></path></svg>
+              </span>
+              <span>
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="toolbar__dropicon"><path stroke-linecap="round" stroke-linejoin="round" d="m19.5 8.25-7.5 7.5-7.5-7.5"></path></svg>
+              </span>
+            </button>
+            <div class="dropupmenu">
+              <div class="dropupmenu__menubody">
+                <div class="dropupmenu__menutitle">Line height</div>
+                <button class="dropupmenu__single" data-font="" data-type="fontFamily">
+                  <span class="dropupmenu__leftspacer"></span>
+                  <div class="dropupmenu__font">Arial</div>
+                </button>
+                <button class="dropupmenu__single" data-font="" data-type="fontFamily">
+                  <span class="dropupmenu__leftspacer"></span>
+                  <div class="dropupmenu__font" style="font-family: LiberationSans;">Arial</div>
+                </button>
+                <button class="dropupmenu__single" data-font="" data-type="fontFamily">
+                  <span class="dropupmenu__leftspacer"></span>
+                  <div class="dropupmenu__font" style="font-family: LiberationSans;">Courier New</div>
+                </button>
+                <button class="dropupmenu__single" data-font="" data-type="fontFamily">
+                  <span class="dropupmenu__leftspacer"></span>
+                  <div class="dropupmenu__font" style="font-family: LiberationSans;">Poppins</div>
+                </button>
+                <button class="dropupmenu__single" data-font="" data-type="fontFamily">
+                  <span class="dropupmenu__leftspacer"></span>
+                  <div class="dropupmenu__font" style="font-family: LiberationSans;">Times New Roman</div>
+                </button>
+                <button class="dropupmenu__single" data-font="" data-type="fontFamily">
+                  <span class="dropupmenu__leftspacer"></span>
+                  <div class="dropupmenu__font" style="font-family: LiberationSans;">Trebuchet</div>
+                </button>
+              </div>
+            </div>
+          </div>
+          <div class="toolbar__middlesingle">
+            <button id="color-select">
+              <span>
+                <svg viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg" stroke-width="0.5" stroke="currentColor" class="toolbar__svg"><path d="M2.311 2.183a.606.606 0 0 1 .868 0l3.736 3.805 2.47-2.517a2.726 2.726 0 0 1 3.906 0l5.808 5.916a2.842 2.842 0 0 1 0 3.976l-7.304 7.442a3.637 3.637 0 0 1-5.21 0l-4.506-4.59a3.8 3.8 0 0 1 0-5.305l3.969-4.039-3.737-3.804a.633.633 0 0 1 0-.884zm7.98 9.008L6.915 7.754l-3.969 4.039c-.4.41-.634.926-.7 1.457h15.23l.756-.77a1.586 1.586 0 0 0 0-2.21l-5.808-5.915a1.517 1.517 0 0 0-2.172 0L7.782 6.87l3.376 3.438a.628.628 0 0 1 0 .882.601.601 0 0 1-.867 0zM2.406 14.5c.12.3.3.55.54.832l4.506 4.586a2.428 2.428 0 0 0 3.476 0l5.32-5.418zM23 19.5c0 1.379-1.101 2.5-2.455 2.5s-2.455-1.121-2.455-2.5c0-.984 1.25-3.11 1.964-4.246a.575.575 0 0 1 .982 0C21.749 16.39 23 18.516 23 19.5Zm-1.228 0c-.034-.004-.003-.047-.023-.133a3.105 3.105 0 0 0-.107-.355 9.566 9.566 0 0 0-.449-1.008c-.2-.399-.426-.805-.648-1.18-.223.375-.449.781-.648 1.18a9.586 9.586 0 0 0-.45 1.008c-.05.144-.088.261-.107.355a.963.963 0 0 0-.023.133c0 .691.549 1.25 1.228 1.25.679 0 1.227-.559 1.227-1.25z"></path></svg>
+              </span>
+              <span>
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="toolbar__dropicon"><path stroke-linecap="round" stroke-linejoin="round" d="m19.5 8.25-7.5 7.5-7.5-7.5"></path></svg>
+              </span>
+            </button>
+            <div class="dropupmenu">
+              <div class="dropupmenu__menubody">
+                <div class="dropupmenu__menutitle">Font</div>
+                <button class="dropupmenu__single" data-font="" data-type="fontFamily">
+                  <span class="dropupmenu__leftspacer"></span>
+                  <div class="dropupmenu__font">Arial</div>
+                </button>
+                <button class="dropupmenu__single" data-font="" data-type="fontFamily">
+                  <span class="dropupmenu__leftspacer"></span>
+                  <div class="dropupmenu__font" style="font-family: LiberationSans;">Arial</div>
+                </button>
+                <button class="dropupmenu__single" data-font="" data-type="fontFamily">
+                  <span class="dropupmenu__leftspacer"></span>
+                  <div class="dropupmenu__font" style="font-family: LiberationSans;">Courier New</div>
+                </button>
+                <button class="dropupmenu__single" data-font="" data-type="fontFamily">
+                  <span class="dropupmenu__leftspacer"></span>
+                  <div class="dropupmenu__font" style="font-family: LiberationSans;">Poppins</div>
+                </button>
+                <button class="dropupmenu__single" data-font="" data-type="fontFamily">
+                  <span class="dropupmenu__leftspacer"></span>
+                  <div class="dropupmenu__font" style="font-family: LiberationSans;">Times New Roman</div>
+                </button>
+                <button class="dropupmenu__single" data-font="" data-type="fontFamily">
+                  <span class="dropupmenu__leftspacer"></span>
+                  <div class="dropupmenu__font" style="font-family: LiberationSans;">Trebuchet</div>
+                </button>
+              </div>
+            </div>
+          </div>
+          <div class="toolbar__middlesingle">
+            <button id="color-select">
+              <span>
+                <svg width="150px" height="150px" viewBox="0 0 24.00 24.00" fill="none" xmlns="http://www.w3.org/2000/svg" transform="rotate(0)matrix(1, 0, 0, 1, 0, 0)" stroke="#000000"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round" stroke="#CCCCCC" stroke-width="0.4800000000000001"></g><g id="SVGRepo_iconCarrier"> <path d="M12 5H7C5.89543 5 5 5.89543 5 7V16H19V12.5" stroke="#000000" stroke-width="1.104" stroke-linecap="round" stroke-linejoin="round"></path> <path d="M3 16H21V17C21 18.1046 20.1046 19 19 19H5C3.89543 19 3 18.1046 3 17V16Z" stroke="#000000" stroke-width="1.104" stroke-linecap="round" stroke-linejoin="round"></path> <path d="M18.5 3V9M18.5 9L16 6.5M18.5 9L21 6.5" stroke="#000000" stroke-width="1.104" stroke-linecap="round" stroke-linejoin="round"></path> </g></svg>
+              </span>
+              <span>
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="toolbar__dropicon"><path stroke-linecap="round" stroke-linejoin="round" d="m19.5 8.25-7.5 7.5-7.5-7.5"></path></svg>
+              </span>
+            </button>
+            <div class="dropupmenu">
+              <div class="dropupmenu__menubody">
+                <div class="dropupmenu__menutitle">Download</div>
+                <button class="dropupmenu__single download-as-png" data-font="png" data-type="download">
+                  <div class="dropupmenu__font">Download as PNG</div>
+                </button>
+                <button class="dropupmenu__single download-as-pdf" data-font="pdf" data-type="download">
+                  <div class="dropupmenu__font">Download as PDF</div>
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="toolbar__lastelems" id="full-screen-previewer">
+          <button>
+            <span>
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="toolbar__svg"><path stroke-linecap="round" stroke-linejoin="round" d="M3.75 3.75v4.5m0-4.5h4.5m-4.5 0L9 9M3.75 20.25v-4.5m0 4.5h4.5m-4.5 0L9 15M20.25 3.75h-4.5m4.5 0v4.5m0-4.5L15 9m5.25 11.25h-4.5m4.5 0v-4.5m0 4.5L15 15"></path></svg>
+            </span>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<script>const jQuery = {};const fwpSiteConfig = {};</script>
+<link rel="stylesheet" href="C:\workspace\playground\advanced-gpt3-cv-builder\assets\build\css\public.css">
+<script src="C:\workspace\playground\advanced-gpt3-cv-builder\assets\build\js\public.js"></script>

@@ -8,7 +8,7 @@ build
 -temp--.eslintignore
 -temp--.eslintrc.json
 -temp--.nvmrc
--temp--.env
+.env
 -temp--.stylelintrc.json
 -temp--package-lock.json
 -temp--data-package.json

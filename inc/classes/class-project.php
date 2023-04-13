@@ -40,7 +40,7 @@ class Project {
 		Rewrite::get_instance();
 		// Esign::get_instance();
 		// Shortcode::get_instance();
-		// PostTypes::get_instance();
+		Post_Types::get_instance();
 		// Taxonomies::get_instance();
 		// Events::get_instance();
 		// Ftp::get_instance();

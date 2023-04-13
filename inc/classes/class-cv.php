@@ -21,6 +21,7 @@ class Cv {
 	protected function setup_hooks() {
 		add_action( 'wp_ajax_futurewordpress/project/advancedgpt3cvbuilder/filesystem/uploadavater', [ $this, 'uploadAvater' ], 10, 0 );
 		add_action( 'wp_ajax_futurewordpress/project/advancedgpt3cvbuilder/filesystem/removeavater', [ $this, 'removeavater' ], 10, 0 );
+		add_action( 'wp_ajax_futurewordpress/project/advancedgpt3cvbuilder/update/cv', [ $this, 'updateCV' ], 10, 0 );
 	}
 	public function uploadAvater() {
 		check_ajax_referer( 'futurewordpress/project/advancedgpt3cvbuilder/verify/nonce', '_nonce' );
@@ -52,5 +53,16 @@ class Cv {
 		if( $oldFilePATH && ! empty( $oldFilePATH ) && file_exists( $oldFilePATH ) && ! is_dir( $oldFilePATH ) ) {unlink( $oldFilePATH );}
 		delete_post_meta( $cv_id, '_avatar', $_avatar );
 		wp_send_json_success( __( 'Image removed successfully', 'domain' ) );
+	}
+	public function updateCV() {
+		check_ajax_referer( 'futurewordpress/project/advancedgpt3cvbuilder/verify/nonce', '_nonce' );
+		if( ! isset( $_POST[ 'cv_id' ] ) || empty( $_POST[ 'cv_id' ] ) ) {wp_send_json_error( __( 'CV not identified', 'domain' ), 200 );}
+		$post_id = $_POST[ 'cv_id' ];
+		$is_done = update_post_meta( $post_id, '_data', $_POST[ '_data' ] );
+		if( ! is_wp_error( $is_done ) ) {
+			wp_send_json_success( __( 'CV Updated Successfully', 'domain' ), 200 );
+		} else {
+			wp_send_json_error( $is_done->get_error_message() );
+		}
 	}
 }
