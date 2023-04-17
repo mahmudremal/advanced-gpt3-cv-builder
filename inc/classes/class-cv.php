@@ -21,7 +21,10 @@ class Cv {
 	protected function setup_hooks() {
 		add_action( 'wp_ajax_futurewordpress/project/advancedgpt3cvbuilder/filesystem/uploadavater', [ $this, 'uploadAvater' ], 10, 0 );
 		add_action( 'wp_ajax_futurewordpress/project/advancedgpt3cvbuilder/filesystem/removeavater', [ $this, 'removeavater' ], 10, 0 );
-		add_action( 'wp_ajax_futurewordpress/project/advancedgpt3cvbuilder/update/cv', [ $this, 'updateCV' ], 10, 0 );
+		add_action( 'wp_ajax_futurewordpress/project/advancedgpt3cvbuilder/cv/update', [ $this, 'updateCV' ], 10, 0 );
+		add_action( 'wp_ajax_noprev_futurewordpress/project/advancedgpt3cvbuilder/cv/update', [ $this, 'updateCV' ], 10, 0 );
+		add_action( 'wp_ajax_futurewordpress/project/advancedgpt3cvbuilder/cv/templates', [ $this, 'cvTemplates' ], 10, 0 );
+		add_action( 'wp_ajax_noprev_futurewordpress/project/advancedgpt3cvbuilder/cv/templates', [ $this, 'cvTemplates' ], 10, 0 );
 	}
 	public function uploadAvater() {
 		check_ajax_referer( 'futurewordpress/project/advancedgpt3cvbuilder/verify/nonce', '_nonce' );
@@ -60,9 +63,62 @@ class Cv {
 		$post_id = $_POST[ 'cv_id' ];
 		$is_done = update_post_meta( $post_id, '_data', $_POST[ '_data' ] );
 		if( ! is_wp_error( $is_done ) ) {
-			wp_send_json_success( __( 'CV Updated Successfully', 'domain' ), 200 );
+			wp_send_json_success( isset( $_POST[ '_nomsg' ] ) ? [] : __( 'CV Updated Successfully', 'domain' ), 200 );
 		} else {
 			wp_send_json_error( $is_done->get_error_message() );
+		}
+	}
+	public function cvTemplates() {
+		check_ajax_referer( 'futurewordpress/project/advancedgpt3cvbuilder/verify/nonce', '_nonce' );
+		if( ! isset( $_POST[ 'cv_id' ] ) || empty( $_POST[ 'cv_id' ] ) ) {wp_send_json_error( __( 'CV not identified.', 'domain' ), 200 );}
+		$post_id = $_POST[ 'cv_id' ];
+		$has_meta = get_post_meta( $post_id, '_data', true );
+		if( ! is_wp_error( $has_meta ) ) {
+			$args = [];
+			$args[ 'cv' ] = [
+				'templates' => [
+					[
+						'type' => 'chrono',
+						'img' =>  'https://www.jobseeker.com/api/documents/template-preview/resume/en/6b4e13bd-4f63-452b-98b9-36f8ab6a0bff',
+						'title' => 'Chrono',
+						'fields' => ['given_name', 'family_name', 'address', 'etc...' ],
+						'template' => ''
+					]
+				],
+				'fonts' => [
+					['title' => 'Montserrat','font' => "'Montserrat', sans-serif",'weights' => [],'url' => 'https://fonts.googleapis.com/css?family=Montserrat'],
+					['title' => 'Lora','font' => "'Lora', serif",'weights' => [],'url' => 'https://fonts.googleapis.com/css?family=Lora'],
+					['title' => 'Open Sans','font' => "'Open Sans', sans-serif",'weights' => [],'url' => 'https://fonts.googleapis.com/css?family=Open+Sans'],
+					['title' => 'Roboto Slab','font' => "'Roboto Slab', serif",'weights' => [],'url' => 'https://fonts.googleapis.com/css?family=Roboto+Slab'],
+					['title' => 'EB Garamond','font' => "'EB Garamond', serif",'weights' => [],'url' => 'https://fonts.googleapis.com/css?family=EB+Garamond'],
+					['title' => 'Great Vibes','font' => "'Great Vibes', cursive",'weights' => [],'url' => 'https://fonts.googleapis.com/css?family=Great+Vibes'],
+					['title' => 'Raleway','font' => "'Raleway', sans-serif",'weights' => ['bold'],'url' => 'https://fonts.googleapis.com/css?family=Raleway'],
+				],
+				'fontsizes' => [
+					['title' => 'XXL','size' => 1.75],
+					['title' => 'XL','size' => 1.5],
+					['title' => 'X','size' => 1.25],
+					['title' => 'M','size' => 1],
+					['title' => 'S','size' => 0.75],
+					['title' => 'XS','size' => 0.5],
+					['title' => 'XXS','size' => 0.25],
+				],
+				'lineheights' => [
+					['title' => 1.8,'height' => 1.8],
+					['title' => 1.6,'height' => 1.6],
+					['title' => 1.4,'height' => 1.4],
+					['title' => 1.2,'height' => 1.2],
+					['title' => 1.0,'height' => 1.0],
+					['title' => 0.8,'height' => 0.8],
+					['title' => 0.6,'height' => 0.6],
+					['title' => 0.4,'height' => 0.4],
+					['title' => 0.2,'height' => 0.2],
+				]
+			];
+			$args[ 'hooks' ] = [ 'cvTemplateUpdated' ];
+			wp_send_json_success( $args, 200 );
+		} else {
+			wp_send_json_error( $has_meta->get_error_message() );
 		}
 	}
 }

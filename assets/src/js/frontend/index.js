@@ -9,7 +9,7 @@
  import html2canvas from 'html2canvas';
  import flatpickr from "flatpickr";
  import Swal from "sweetalert2"; // "success", "error", "warning", "info" or "question"
- import Pickr from '@simonwep/pickr';
+ import ColorPicker from 'simple-color-picker';
  import SVGJS from './svg';
  import CVTemplate from './templates';
 
@@ -36,14 +36,16 @@
 			window.html2canvas = html2canvas;window.Swal = Swal;
 			window.flatpickr = flatpickr;window._ = _;
 			window.CVTemplate = CVTemplate;window.SVGJS = SVGJS;
-			this.cvCanvas = false;this.cv = {};this.svg = SVGJS;
+			window.ColorPicker = ColorPicker;
+			this.cvCanvas = false;this.svg = SVGJS;
 			this.form = document.querySelector( '#cvbuilder[name="cvbuilder"]' );
+			this.cv = {basiColor: "#a09aff",fontSize: "1",fontFamily: "'Roboto Slab', serif",lineHeight: "1",cvTemplate: "chrono"};
 
 			this.init_functions();this.addanother_field();
 			this.profileImgUpload();this.profileImgRemove();
 			this.generate_submission();this.flat_picker();
 			this.generate_cv( this.generate_formdata() );
-			this.toolbar_setup();
+			this.toolbar_init();
 		}
 		init_functions() {
 			this.toast = Swal.mixin({
@@ -68,12 +70,12 @@
 				contentType: false,
 				processData: false,
 				success: function( json ) {
-					// console.log( json );
-					message = ( typeof json.data.message === 'string' ) ? json.data.message : json.data;
-					if( json.success ) {
-						thisClass.toast.fire({icon: 'success',title: message})
-					} else {
-						thisClass.toast.fire({icon: 'error',title: message})
+					thisClass.lastJson = json.data;
+					message = ( typeof json.data.message === 'string' ) ? json.data.message : (
+						( typeof json.data === 'string' ) ? json.data : false
+					);
+					if( message ) {
+						thisClass.toast.fire({icon: ( json.success ) ? 'success' : 'error', title: message})
 					}
 					if( json.data.hooks ) {
 						json.data.hooks.forEach( ( hook ) => {
@@ -88,40 +90,27 @@
 			});
 		}
 		flat_picker() {
+			const thisClass = this;
 			flatpickr( '.the-flat-picker' );
-			var link = document.createElement( 'link' );link.rel = 'stylesheet';
-			link.href = 'https://cdn.jsdelivr.net/npm/@simonwep/pickr/dist/themes/monolith.min.css';
-			document.head.appendChild( link );
-			const pickr = Pickr.create({
-				el: '.the-color-picker',
-				theme: 'monolith', // or 'classic', or 'monolith', or 'nano'
-				swatches: [],
-				showAlways: true,
-			
-				components: {
-					// Main components
-					preview: false,
-					opacity: true,
-					hue: false,
-			
-					// Input / output Options
-					interaction: {
-						hex: true,
-						rgba: false,
-						hsla: false,
-						hsva: false,
-						cmyk: false,
-						input: true,
-						clear: false,
-						save: false,
-					},
-				},
+			// var link = document.createElement( 'link' );link.rel = 'stylesheet';
+			// link.href = 'https://cdn.jsdelivr.net/npm/@simonwep/pickr/dist/themes/monolith.min.css';
+			// document.head.appendChild( link );
+			thisClass.colorPicker = new ColorPicker({
+				color: '#FF0000',
+				// background: '#454545',
+				el: document.querySelector( '.the-color-picker' ),
+				// width: 200,
+				// height: 200,
+				// window: document.getElementsByTagName('iframe')[0].contentWindow
 			});
-			pickr.on( 'changestop', ( color, instance ) => {
-				console.log( 'Event: "swatchselect"', color.toHEXA().toString() );
-			});
-			var picker = document.querySelector( '.pcr-app' );
-			if( picker ) {picker.style.display = 'none';}
+			// thisClass.colorPicker.on( 'update', ( color ) => {} );
+			thisClass.colorPicker.onChange( ( color ) => {
+        // document.body.style.background = t, document.querySelector("h1 a").style.color = c.isDark() ? "#FFFFFF" : "#000000"
+				thisClass.cv.basiColor = color;
+				document.querySelectorAll( '.cvbuilderscreen .editescreen__card svg [data-basic-color]' ).forEach( ( el ) => {
+					el.style.fill = color;
+				} );
+    	} );
 		}
 		profileImgUpload() {
 			const thisClass = this;var theInterval, reader, file, preview;
@@ -181,7 +170,8 @@
 		}
 		addanother_field() {
 			const thisClass = this;thisClass.templates = {};var temp, template, tempEl;
-			document.querySelectorAll( '#add-edu, #add-exp, #add-skl, #add-scl, #add-hby, #add-inrts, #add-lngs, #add-scl, #add-hby' ).forEach( ( el, ei ) => {
+			// '#add-edu, #add-exp, #add-skl, #add-scl, #add-hby, #add-inrts, #add-lngs, #add-scl, #add-hby, #add-ref'
+			document.querySelectorAll( '#cvbuilder .form-group[data-field] .add-blk' ).forEach( ( el, ei ) => {
 					el.dataset.template = ei;
 					tempEl = el.previousElementSibling.querySelector( '.the_template' );
 					if( tempEl ) {
@@ -226,7 +216,7 @@
 		
 		
 		get_template() {
-			if( typeof CVTemplate.choosen_template === 'undefined' ) {CVTemplate.choosen_template = CVTemplate.template4;}
+			if( typeof CVTemplate.choosen_template === 'undefined' ) {CVTemplate.choosen_template = CVTemplate.template5;}
 			return CVTemplate.choosen_template;
 		}
 		generate_template( cvData ) {
@@ -238,25 +228,12 @@
 			// render the template with the data
 			var cvHtml = template( cvData );
 			// var cvHtml = CVTemplate_1;
-			cvHtml = '<div class="click-drop"></div>' + cvHtml;
 			thisClass.fixed = document.querySelector( '.cvbuilderscreen' );
 			var cvCanvas = document.querySelector( '.editescreen__card' );
 			// cvCanvas.style.height = '1150px';cvCanvas.style.width = '800px';
 			cvCanvas.innerHTML = cvHtml;thisClass.fixed.classList.add( 'is-fixed' );
-			// cvCanvas.querySelectorAll( 'p, h1, h2, h3, h4, h5, h6, li, a, img' ).forEach( ( el, ei ) => {
-			// 	el.setAttribute( 'contenteditable', true );
-			// 	// el.addEventListener( 'click', ( e ) => {} );
-			// } );
-			// cvCanvas.querySelectorAll( '.click-drop' ).forEach( ( el, ei ) => {
-			// 	el.addEventListener( 'click', ( e ) => {
-			// 		el.parentElement.innerHTML = '';
-			// 		el.parentElement.classList.remove( 'is-fixed', 'is-editable' );
-			// 	} );
-			// } );
 			thisClass.cvCanvas = cvCanvas;
-			// create a canvas from the html using html2canvas
-			// , { width: 800, height: 1150 }
-			// 
+			thisClass.update_fonts();
 		}
 		generate_cv( json = false ) {
 			const thisClass = this;
@@ -284,8 +261,35 @@
 		update_cv() {
 			this.generate_cv( this.generate_formdata() );
 		}
-		update_fields() {
-			// FIELDS will be updated according to template field property
+		update_fonts() {
+			const thisClass = this;
+			if( typeof thisClass.cv.fontFamily !== 'undefined' ) {
+				document.querySelectorAll( '.cvbuilderscreen .editescreen__card svg [style*=font-family]' ).forEach( ( el ) => {
+					el.style.fontFamily = thisClass.cv.fontFamily;
+				} );
+			}
+			if( typeof thisClass.cv.fontSize !== 'undefined' ) {
+				document.querySelectorAll( '.cvbuilderscreen .editescreen__card svg [style*=font-size]' ).forEach( ( el ) => {
+					var currentFontSize = window.getComputedStyle( el ).getPropertyValue( 'font-size' );
+					var currentFontSizeNumeric = parseFloat( currentFontSize );
+					var currentFontSizeUnit = currentFontSize.replace( currentFontSizeNumeric, '' );
+					var newFontSize = ( currentFontSizeNumeric * thisClass.cv.fontSize ) + currentFontSizeUnit;
+					if( newFontSize !== 'NaN' + currentFontSizeUnit ) {
+						el.style.fontSize = newFontSize;
+					}
+				} );
+			}
+			if( typeof thisClass.cv.lineHeight !== 'undefined' ) {
+				document.querySelectorAll( '.cvbuilderscreen .editescreen__card svg [dy]:not([dy="0"])' ).forEach( ( el ) => {
+					var currentDY = el.getAttribute( 'dy' );
+					var currentDYNumeric = parseFloat( currentDY );
+					var currentDYUnit = currentDY.replace( currentDYNumeric, '' );
+					var newDY = ( currentDYNumeric * thisClass.cv.lineHeight ) + currentDYUnit;
+					if( newDY !== NaN + currentDYUnit ) {
+						el.setAttribute( 'dy', newDY );
+					}
+				} );
+			}
 		}
 		generate_formdata() {
 			const thisClass = this;var formdata, json;
@@ -296,6 +300,7 @@
 				json = thisClass.transformObjectKeys( json );
 				var preview = document.querySelector( '.profile-image-upload-preview' );
 				if( preview ) {json.cv.info.avater = preview.src;}
+				if( thisClass.cv ) {json.cv.tools = thisClass.cv;}
 				return json;
 			} else {
 				return {};
@@ -310,7 +315,7 @@
 					thisClass.generate_cv( json );
 					json.cv.info.avater = '';json.i18n = {};json.svg = {};
 					var formdata = new FormData();
-							formdata.append( 'action', 'futurewordpress/project/advancedgpt3cvbuilder/update/cv' );
+							formdata.append( 'action', 'futurewordpress/project/advancedgpt3cvbuilder/cv/update' );
 							formdata.append( 'cv_id', thisClass.form.dataset.cv );
 							formdata.append( '_data', JSON.stringify( json ) );
 							formdata.append( '_nonce', thisClass.ajaxNonce );
@@ -319,59 +324,61 @@
 			}
 		}
 
+		toolbar_init() {
+			const thisClass = this;var form = document.querySelector( 'form#cvbuilder[name="cvbuilder"]' );
+			if( ! form ) {return;}
+			document.body.addEventListener( 'cvTemplateUpdated', ( e ) => {thisClass.toolbar_setup();} );
+			var formdata = new FormData();
+				formdata.append( 'action', 'futurewordpress/project/advancedgpt3cvbuilder/cv/templates' );
+				formdata.append( 'cv_id', form.dataset.cv );
+				formdata.append( '_nonce', thisClass.ajaxNonce );
+				thisClass.sendToServer( formdata );
+		}
 		toolbar_setup() {
 			const thisClass = this;var templates, button, card, imgwrap, img, subtitle, json, spacer, div;
-			templates = document.querySelector( '.choose-templates' );
-			json = {
+			thisClass.cvJson = json = SVGJS.parseArgs( thisClass.lastJson.cv, {
 				templates: [
 					{
 						type: 'chrono',
 						img:  'https://www.jobseeker.com/api/documents/template-preview/resume/en/6b4e13bd-4f63-452b-98b9-36f8ab6a0bff',
 						title: 'Chrono',
-						fields: ['given_name', 'family_name', 'address', 'etc...' ]
+						fields: ['given_name', 'family_name', 'address', 'etc...' ],
+						template: ''
 					}
 				],
 				fonts: [
-					{
-						title: 'Times New Roman',
-						font: 'Times New Roman',
-						weights: []
-					}
+					{title: 'Montserrat',font: "'Montserrat', sans-serif",weights: [],url: 'https://fonts.googleapis.com/css?family=Montserrat'},
+					{title: 'Lora',font: "'Lora', serif",weights: [],url: 'https://fonts.googleapis.com/css?family=Lora'},
+					{title: 'Open Sans',font: "'Open Sans', sans-serif",weights: [],url: 'https://fonts.googleapis.com/css?family=Open+Sans'},
+					{title: 'Roboto Slab',font: "'Roboto Slab', serif",weights: [],url: 'https://fonts.googleapis.com/css?family=Roboto+Slab'},
+					{title: 'EB Garamond',font: "'EB Garamond', serif",weights: [],url: 'https://fonts.googleapis.com/css?family=EB+Garamond'},
+					{title: 'Great Vibes',font: "'Great Vibes', cursive",weights: [],url: 'https://fonts.googleapis.com/css?family=Great+Vibes'},
+					{title: 'Raleway',font: "'Raleway', sans-serif",weights: ['bold'],url: 'https://fonts.googleapis.com/css?family=Raleway'},
 				],
 				fontsizes: [
-					{
-						title: 'XL',
-						size:  '15px'
-					}
+					{title: 'XXL',size: 1.75},
+					{title: 'XL',size: 1.5},
+					{title: 'X',size: 1.25},
+					{title: 'M',size: 1},
+					{title: 'S',size: 0.75},
+					{title: 'XS',size: 0.5},
+					{title: 'XXS',size: 0.25},
 				],
 				lineheights: [
-					{
-						title: '-0.5',
-						height:  '10px'
-					},
-					{
-						title: '-0.75',
-						height:  '15px'
-					},
-					{
-						title: '1',
-						height:  '20px'
-					},
-					{
-						title: '0.5',
-						height:  '25px'
-					},
-					{
-						title: '0.75',
-						height:  '30px'
-					},
-					{
-						title: '2',
-						height:  '40px'
-					}
+					{title: 1.8,height:  1.8},
+					{title: 1.6,height:  1.6},
+					{title: 1.4,height:  1.4},
+					{title: 1.2,height:  1.2},
+					{title: 1.0,height:  1.0},
+					{title: 0.8,height:  0.8},
+					{title: 0.6,height:  0.6},
+					{title: 0.4,height:  0.4},
+					{title: 0.2,height:  0.2},
 				]
-			};
+			} );
+			templates = document.querySelector( '.choose-templates' );
 			if( templates ) {
+				templates.innerHTML = '';
 				json.templates.forEach( ( e, i ) => {
 					button = document.createElement( 'button' );button.classList.add( 'templates__single' );
 					button.dataset.font = e.type;button.dataset.type = 'cvTemplate';
@@ -386,10 +393,10 @@
 			}
 			templates = document.querySelector( '#font-select + .dropupmenu .dropupmenu__menubody' );
 			if( templates ) {
-				subtitle = document.createElement( 'div' );subtitle.classList.add( 'dropupmenu__menutitle' );subtitle.innerHTML = 'Font';templates.innerHTML = '';templates.appendChild( subtitle );
+				subtitle = document.createElement( 'div' );subtitle.classList.add( 'dropupmenu__menutitle' );subtitle.innerHTML = 'Font Family';templates.innerHTML = '';templates.appendChild( subtitle );
 				json.fonts.forEach( ( e, i ) => {
 					button = document.createElement( 'button' );button.classList.add( 'dropupmenu__single' );
-					button.dataset.font = e.font;button.dataset.type = 'fontFamily';
+					button.dataset.font = e.font;button.dataset.order = i;button.dataset.type = 'fontFamily';
 					spacer = document.createElement( 'span' );spacer.classList.add( 'dropupmenu__leftspacer' );
 					div = document.createElement( 'div' );div.classList.add( 'dropupmenu__font' );div.innerHTML = e.title;
 					button.appendChild( spacer );button.appendChild( div );templates.appendChild( button );
@@ -397,10 +404,10 @@
 			}
 			templates = document.querySelector( '#font-size + .dropupmenu .dropupmenu__menubody' );
 			if( templates ) {
-				subtitle = document.createElement( 'div' );subtitle.classList.add( 'dropupmenu__menutitle' );subtitle.innerHTML = 'Font';templates.innerHTML = '';templates.appendChild( subtitle );
+				subtitle = document.createElement( 'div' );subtitle.classList.add( 'dropupmenu__menutitle' );subtitle.innerHTML = 'Font Size';templates.innerHTML = '';templates.appendChild( subtitle );
 				json.fontsizes.forEach( ( e, i ) => {
 					button = document.createElement( 'button' );button.classList.add( 'dropupmenu__single' );
-					button.dataset.font = e.size;button.dataset.type = 'fontFamily';
+					button.dataset.font = e.size;button.dataset.order = i;button.dataset.type = 'fontSize';
 					spacer = document.createElement( 'span' );spacer.classList.add( 'dropupmenu__leftspacer' );
 					div = document.createElement( 'div' );div.classList.add( 'dropupmenu__font' );div.innerHTML = e.title;
 					button.appendChild( spacer );button.appendChild( div );templates.appendChild( button );
@@ -408,10 +415,10 @@
 			}
 			templates = document.querySelector( '#line-height + .dropupmenu .dropupmenu__menubody' );
 			if( templates ) {
-				subtitle = document.createElement( 'div' );subtitle.classList.add( 'dropupmenu__menutitle' );subtitle.innerHTML = 'Font';templates.innerHTML = '';templates.appendChild( subtitle );
+				subtitle = document.createElement( 'div' );subtitle.classList.add( 'dropupmenu__menutitle' );subtitle.innerHTML = 'Line height';templates.innerHTML = '';templates.appendChild( subtitle );
 				json.lineheights.forEach( ( e, i ) => {
 					button = document.createElement( 'button' );button.classList.add( 'dropupmenu__single' );
-					button.dataset.font = e.height;button.dataset.type = 'fontFamily';
+					button.dataset.font = e.height;button.dataset.order = i;button.dataset.type = 'lineHeight';
 					spacer = document.createElement( 'span' );spacer.classList.add( 'dropupmenu__leftspacer' );
 					div = document.createElement( 'div' );div.classList.add( 'dropupmenu__font' );div.innerHTML = e.title;
 					button.appendChild( spacer );button.appendChild( div );templates.appendChild( button );
@@ -484,14 +491,27 @@
 					var past = ( el.parentElement ) ? el.parentElement.querySelectorAll( '.is-active' ) : [];
 					past.forEach( ( pl, pi ) => {pl.classList.remove( 'is-active' );} );el.classList.add( 'is-active' );
 					thisClass.cv[ el.dataset.type ] = el.dataset.font;
-					thisClass.update_fields();thisClass.update_cv();
-				} );
-			} );
-			document.querySelector( '#color-select' ).addEventListener( 'click', ( event ) => {
-					var picker = document.querySelector( '.pcr-app' );
-					if( picker ) {
-						picker.style.display = ( picker.style.display == 'none' ) ? 'block' : 'none';
+					if( el.dataset.type == 'fontFamily' ) {
+						var link = document.createElement( 'link' );link.id = 'cv-builder-fonts';link.rel = 'stylesheet';
+						link.href = thisClass.cvJson.fonts[ el.dataset.order ]?.url??'';document.head.appendChild( link );
 					}
+					if( el.dataset.type == 'cvTemplate' ) {
+						document.querySelectorAll( '#cvbuilder .form-group[data-field]' ).forEach( ( el, eli ) => {
+							el.style.display = 'none';
+							var template = thisClass.cvJson.templates.find( template => template.type === el.dataset.font );
+							if( typeof template !== 'undefined' ) {
+								CVTemplate.choosen_template = template.template;
+								template.fields.forEach( ( fld, fli ) => {
+									var field = document.querySelectorAll( '#cvbuilder .form-group[data-field="' + fld + '"]' );
+									if( field ) {field.style.display = 'block';}
+								} );
+								console.log( template );
+							}
+						} );
+					}
+					thisClass.update_cv();
+					thisClass.toolbar_update();
+				} );
 			} );
 			document.querySelectorAll( '.download-as-pdf' ).forEach( ( e, i ) => {
 				e.addEventListener( 'click', ( event ) => {
@@ -514,6 +534,18 @@
 					a.href = thisClass.imgData;a.download = 'cv.png';a.click();
 				} );
 			} );
+		}
+		toolbar_update() {
+			const thisClass = this;
+			var json = thisClass.generate_formdata();
+			json.cv.info.avater = '';json.i18n = {};json.svg = {};
+			var formdata = new FormData();
+					formdata.append( 'action', 'futurewordpress/project/advancedgpt3cvbuilder/cv/update' );
+					formdata.append( 'cv_id', thisClass.form.dataset.cv );
+					formdata.append( '_data', JSON.stringify( json ) );
+					formdata.append( '_nonce', thisClass.ajaxNonce );
+					formdata.append( '_nomsg', 'true' );
+					thisClass.sendToServer( formdata );
 		}
 	}
 	new FutureWordPress_Frontend();

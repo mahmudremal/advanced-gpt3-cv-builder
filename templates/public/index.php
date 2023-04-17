@@ -9,9 +9,9 @@ global $currenttab;global $app_resumes;global $userInfo;global $errorHappens;
 $app_resumes = get_query_var( 'app_resumes' );$the_cv_id = $app_resumes;
 $meta = get_post_meta( $the_cv_id, '_data', true );$meta = json_decode( $meta, true );$meta = isset( $meta[ 'cv' ] ) ? $meta[ 'cv' ] : $meta;
 // $cv = array_map( function( $a ){ return $a[0]; }, (array) get_post_meta( $the_cv_id, '_data', true ) );
-$cv = (object) wp_parse_args( (array) $meta, [ 'info' => [], 'edu' => [], 'exp' => [], 'skl' => [], 'inrts' => [], 'lng' => [], 'scl' => [], 'hby' => [] ] );
+$cv = (object) wp_parse_args( (array) $meta, [ 'info' => [], 'edu' => [], 'exp' => [], 'skl' => [], 'inrts' => [], 'lng' => [], 'scl' => [], 'hby' => [], 'ref' => [] ] );
 
-$all_edus = $cv->edu;$all_exps = $cv->exp;$all_skills = $cv->skl;$all_interests = $cv->inrts;$all_languages = $cv->lng;$all_socials = $cv->scl;$all_hobbies = $cv->hby;
+$all_edus = $cv->edu;$all_exps = $cv->exp;$all_skills = $cv->skl;$all_interests = $cv->inrts;$all_languages = $cv->lng;$all_socials = $cv->scl;$all_hobbies = $cv->hby;$all_references = $cv->ref;
 $avater = get_post_meta( $the_cv_id, '_avatar', true );
 $avater = ( $avater && ! empty( $avater ) ) ? $avater : 'https://geeko.netlify.app/img/test-img/1.jpg';
 // var_dump( $cv );
@@ -23,12 +23,12 @@ get_header();
       <div class="cvbuilderscreen">
         <div class="formscreen">
           <div class="formscreen__wrapper">
-            <?php $cv->info = (object) wp_parse_args( $cv->info, ['given_name' => '', 'family_name' => '', 'tagline' => '', 'birth' => '', 'address' => '', 'phone' => '', 'email' => '', 'nationality' => '', 'residence' => '', 'zivilstand' => '', 'children' => '', 'bio' => '' ] ); ?>
+            <?php $cv->info = (object) wp_parse_args( $cv->info, ['given_name' => '', 'family_name' => '', 'tagline' => '', 'birth' => '', 'address' => '', 'phone' => '', 'email' => '', 'website' => '', 'nationality' => '', 'residence' => '', 'zivilstand' => '', 'children' => '', 'bio' => '' ] ); ?>
             <form method="post" action="#" name="cvbuilder" id="cvbuilder" data-cv="<?php echo esc_attr( $the_cv_id ); ?>">
               <div class="mt-10">
                 <h2><?php esc_html_e( 'Personal Info', 'domian' ); ?></h2>
                 <div class="block-c--ontainer">
-                  <div class="row align-items-center">
+                  <div class="row align-items-center" data-field="avater">
                     <div class="col-lg-2 col-md-4">
                       <img src="<?php echo esc_url( $avater ); ?>" class="d-block profile-image-upload-preview" alt="" data-default="<?php echo esc_url( 'https://geeko.netlify.app/img/test-img/1.jpg' ); ?>">
                     </div>
@@ -52,53 +52,57 @@ get_header();
                   </div>
                   <div class="mt-30 mb-30">
                     <div class="row">
-                      <div class="col-lg-6">
+                      <div class="col-lg-6"  data-field="given_name">
                         <label><?php esc_html_e( 'Given name:', 'domian' ); ?></label>
                         <input type="text" name="cv[info][given_name]" class="form-control" placeholder="<?php esc_attr_e( 'enter your first name', 'domian' ); ?>" value="<?php echo esc_attr( $cv->info->given_name ); ?>">
                       </div>
-                      <div class="col-lg-6">
+                      <div class="col-lg-6"  data-field="family_name">
                         <label><?php esc_html_e( 'Family name:', 'domian' ); ?></label>
                         <input type="text" name="cv[info][family_name]" class="form-control" placeholder="<?php esc_attr_e( 'enter your last name', 'domian' ); ?>" value="<?php echo esc_attr( $cv->info->family_name ); ?>">
                       </div>
-                      <div class="col-lg-6">
+                      <div class="col-lg-6"  data-field="tagline">
                         <label><?php esc_html_e( 'Tag line:', 'domian' ); ?></label>
                         <input type="text" name="cv[info][tagline]" class="form-control" placeholder="<?php esc_attr_e( 'enter the tag line', 'domian' ); ?>" value="<?php echo esc_attr( $cv->info->tagline ); ?>">
                       </div>
                       
-                      <div class="col-lg-6">
+                      <div class="col-lg-6"  data-field="birth">
                         <label><?php esc_html_e( 'Date of birth:', 'domian' ); ?></label>
                         <input type="text" name="cv[info][birth]" class="form-control the-flat-picker" placeholder="<?php esc_attr_e( 'Date of birth', 'domian' ); ?>" value="<?php echo esc_attr( $cv->info->birth ); ?>">
                       </div>
-                      <div class="col-lg-6">
+                      <div class="col-lg-6"  data-field="nationality">
                         <label><?php esc_html_e( 'Nationality:', 'domian' ); ?></label>
                         <input type="text" name="cv[info][nationality]" class="form-control" placeholder="<?php esc_attr_e( 'enter your nationality', 'domian' ); ?>" value="<?php echo esc_attr( $cv->info->nationality ); ?>">
                       </div>
-                      <div class="col-lg-6">
+                      <div class="col-lg-6"  data-field="residence">
                         <label><?php esc_html_e( 'Residence permit:', 'domian' ); ?></label>
                         <input type="text" name="cv[info][residence]" class="form-control" placeholder="<?php esc_attr_e( 'enter your residence permit', 'domian' ); ?>" value="<?php echo esc_attr( $cv->info->residence ); ?>">
                       </div>
-                      <div class="col-lg-6">
+                      <div class="col-lg-6"  data-field="zivilstand">
                         <label><?php esc_html_e( 'Zivilstand:', 'domian' ); ?></label>
                         <input type="text" name="cv[info][zivilstand]" class="form-control" placeholder="<?php esc_attr_e( 'enter your zivilstand', 'domian' ); ?>" value="<?php echo esc_attr( $cv->info->zivilstand ); ?>">
                       </div>
-                      <div class="col-lg-6">
+                      <div class="col-lg-6"  data-field="children">
                         <label><?php esc_html_e( 'Children:', 'domian' ); ?></label>
                         <input type="text" name="cv[info][children]" class="form-control" placeholder="<?php esc_attr_e( 'How many children do you have?', 'domian' ); ?>" value="<?php echo esc_attr( $cv->info->children ); ?>">
                       </div>
-                      <div class="col-lg-6">
+                      <div class="col-lg-6"  data-field="address">
                         <label><?php esc_html_e( 'Address:', 'domian' ); ?></label>
                         <input type="text" name="cv[info][address]" class="form-control" placeholder="<?php esc_attr_e( 'enter your full address', 'domian' ); ?>" value="<?php echo esc_attr( $cv->info->address ); ?>">
                       </div>
-                      <div class="col-lg-6">
+                      <div class="col-lg-6"  data-field="phone">
                         <label><?php esc_html_e( 'Phone:', 'domian' ); ?></label>
                         <input type="text" name="cv[info][phone]" class="form-control" placeholder="<?php esc_attr_e( 'enter your phone number', 'domian' ); ?>" value="<?php echo esc_attr( $cv->info->phone ); ?>">
                       </div>
-                      <div class="col-lg-6">
+                      <div class="col-lg-6"  data-field="email">
                         <label><?php esc_html_e( 'Email:', 'domian' ); ?></label>
                         <input type="text" name="cv[info][email]" class="form-control" placeholder="<?php esc_attr_e( 'enter your email address', 'domian' ); ?>" value="<?php echo esc_attr( $cv->info->email ); ?>">
                       </div>
+                      <div class="col-lg-6"  data-field="website">
+                        <label><?php esc_html_e( 'Website:', 'domian' ); ?></label>
+                        <input type="text" name="cv[info][website]" class="form-control" placeholder="<?php esc_attr_e( 'enter your website url', 'domian' ); ?>" value="<?php echo esc_attr( $cv->info->website ); ?>">
+                      </div>
                       
-                      <div class="col-lg-12">
+                      <div class="col-lg-12" data-field="bio">
                         <label><?php esc_html_e( 'Your Bio Here', 'domian' ); ?></label>
                         <textarea name="cv[info][bio]" id="comments" rows="4" class="form-control" placeholder="<?php esc_attr_e( 'About Me :', 'domian' ); ?>"><?php echo esc_html( $cv->info->bio ); ?></textarea>
                       </div>
@@ -108,7 +112,7 @@ get_header();
               </div>
 
               <?php $all_edus[] = []; ?>
-              <div class="form-group add-edu">
+              <div class="form-group add-edu" data-field="edu">
                 <h2><?php esc_attr_e( 'Add Educations', 'domian' ); ?></h2>
                 <div class="all-edus">
                   <?php foreach( $all_edus as $eduI => $edu ) :
@@ -147,7 +151,7 @@ get_header();
               <div class="clearfix"></div>
               
               <?php $all_exps[] = []; ?>
-              <div class="form-group add-exp mt-s">
+              <div class="form-group add-exp mt-s" data-field="exp">
                 <h2><?php esc_html_e( 'Add Experiences', 'domian' ); ?></h2>
                 <div class="all-exps">
                   <?php foreach( $all_exps as $expI => $exp ) :
@@ -188,7 +192,7 @@ get_header();
               <div class="clearfix"></div>
 
               <?php $all_skills[] = []; ?>
-              <div class="form-group add-skill mt-s">
+              <div class="form-group add-skill mt-s" data-field="skl">
                 <h2><?php esc_html_e( 'Add Skills', 'domian' ); ?></h2>
                 <div class="block-container">
                   <div class="all-skills">
@@ -219,7 +223,7 @@ get_header();
               <div class="clearfix"></div>
 
               <?php $all_interests[] = []; ?>
-              <div class="form-group add-skill mt-s">
+              <div class="form-group add-skill mt-s" data-field="inrts">
                 <h2><?php esc_html_e( 'Add Interest', 'domian' ); ?></h2>
                 <div class="block-container">
                   <div class="all-interests">
@@ -248,7 +252,7 @@ get_header();
               <div class="clearfix"></div>
 
               <?php $all_languages[] = []; ?>
-              <div class="form-group add-skill mt-s">
+              <div class="form-group add-skill mt-s" data-field="lng">
                 <h2><?php esc_html_e( 'Add Language', 'domian' ); ?></h2>
                 <div class="block-container">
                   <div class="all-languages">
@@ -277,7 +281,7 @@ get_header();
               <div class="clearfix"></div>
               
               <?php $all_socials[] = []; ?>
-              <div class="form-group add-social mt-s">
+              <div class="form-group add-social mt-s" data-field="scl">
                 <h2><?php esc_html_e( 'Add social Links', 'domian' ); ?></h2>
                 <div class="block-container">
                   <div class="all-socials">
@@ -307,7 +311,7 @@ get_header();
               <div class="clearfix"></div>
 
               <?php $all_hobbies[] = []; ?>
-              <div class="form-group add-social mt-s">
+              <div class="form-group add-social mt-s" data-field="hby">
                 <h2><?php esc_html_e( 'Add Hobbies', 'domian' ); ?></h2>
                 <div class="block-container">
                   <div class="all-hobbies">
@@ -326,6 +330,36 @@ get_header();
                   <div class="add-blk add-hobbies btn btn-info mt-50" id="add-hby" data-target=".all-hobbies" data-type="hby">
                     <i class="fa fa-plus"></i>
                     <span><?php esc_html_e( 'Add new Hobby', 'domian' ); ?></span>
+                  </div>
+                </div>
+              </div>
+
+              <div class="clearfix"></div>
+
+              <?php $all_references[] = []; ?>
+              <div class="form-group add-reference mt-s" data-field="ref">
+                <h2><?php esc_html_e( 'Add References', 'domian' ); ?></h2>
+                <div class="block-container">
+                  <div class="all-references">
+                    <?php foreach( $all_references as $refI => $ref ) :
+                    $cv->ref[$refI] = isset( $cv->ref[$refI] ) ? $cv->ref[$refI] : [];
+                    $cv->ref[$refI] = (object) wp_parse_args( $cv->ref[$refI], [ 'name' => '', 'position' => '', 'email' => '' ] );
+                    $sortOrder = ( count( $ref ) == 0 ) ? 'spclOrdrSrt' : $refI;
+                    ?>
+                    <div class="new-reference <?php echo esc_attr( ( count( $ref ) == 0 ) ? 'd-none the_template' : '' ); ?>">
+                      <label><?php esc_html_e( 'Referrer Name', 'domian' ); ?></label>
+                      <input type="text" name="cv[ref][<?php echo esc_attr( $sortOrder ); ?>][name]" class="form-control" value="<?php echo esc_attr( $cv->ref[$refI]->name ); ?>">
+                      <label><?php esc_html_e( 'Position', 'domian' ); ?></label>
+                      <input type="text" name="cv[ref][<?php echo esc_attr( $sortOrder ); ?>][position]" class="form-control" value="<?php echo esc_attr( $cv->ref[$refI]->position ); ?>">
+                      <label><?php esc_html_e( 'Email', 'domian' ); ?></label>
+                      <input type="text" name="cv[ref][<?php echo esc_attr( $sortOrder ); ?>][email]" class="form-control" value="<?php echo esc_attr( $cv->ref[$refI]->email ); ?>">
+                    </div>
+                    <?php endforeach; ?>
+                  </div>
+                  
+                  <div class="add-blk add-references btn btn-info mt-50" id="add-ref" data-target=".all-references" data-type="ref">
+                    <i class="fa fa-plus"></i>
+                    <span><?php esc_html_e( 'Add new Reference', 'domian' ); ?></span>
                   </div>
                 </div>
               </div>
@@ -349,12 +383,19 @@ get_header();
         <div class="tool-bar">
           <div class="choose-templates">
             <button class="templates__single" data-font="" data-type="cvTemplate">
-              <div class="templates__card">
-                <div class="templates__imgwrap">
-                  <img src="https://www.jobseeker.com/api/documents/template-preview/resume/en/6b4e13bd-4f63-452b-98b9-36f8ab6a0bff" alt="">
-                </div>
-              </div>
-              <div class="templates__subtitle">Chrono</div>
+              <div class="skeleton-8istxox1jc5"></div>
+            </button>
+            <button class="templates__single" data-font="" data-type="cvTemplate">
+              <div class="skeleton-8istxox1jc5"></div>
+            </button>
+            <button class="templates__single" data-font="" data-type="cvTemplate">
+              <div class="skeleton-8istxox1jc5"></div>
+            </button>
+            <button class="templates__single" data-font="" data-type="cvTemplate">
+              <div class="skeleton-8istxox1jc5"></div>
+            </button>
+            <button class="templates__single" data-font="" data-type="cvTemplate">
+              <div class="skeleton-8istxox1jc5"></div>
             </button>
           </div>
           <div class="p-3">
@@ -382,30 +423,7 @@ get_header();
                   <div class="dropupmenu">
                     <div class="dropupmenu__menubody">
                       <div class="dropupmenu__menutitle">Font</div>
-                      <button class="dropupmenu__single" data-font="" data-type="fontFamily">
-                        <span class="dropupmenu__leftspacer"></span>
-                        <div class="dropupmenu__font">Arial</div>
-                      </button>
-                      <button class="dropupmenu__single" data-font="" data-type="fontFamily">
-                        <span class="dropupmenu__leftspacer"></span>
-                        <div class="dropupmenu__font" style="font-family: LiberationSans;">Arial</div>
-                      </button>
-                      <button class="dropupmenu__single" data-font="" data-type="fontFamily">
-                        <span class="dropupmenu__leftspacer"></span>
-                        <div class="dropupmenu__font" style="font-family: LiberationSans;">Courier New</div>
-                      </button>
-                      <button class="dropupmenu__single" data-font="" data-type="fontFamily">
-                        <span class="dropupmenu__leftspacer"></span>
-                        <div class="dropupmenu__font" style="font-family: LiberationSans;">Poppins</div>
-                      </button>
-                      <button class="dropupmenu__single" data-font="" data-type="fontFamily">
-                        <span class="dropupmenu__leftspacer"></span>
-                        <div class="dropupmenu__font" style="font-family: LiberationSans;">Times New Roman</div>
-                      </button>
-                      <button class="dropupmenu__single" data-font="" data-type="fontFamily">
-                        <span class="dropupmenu__leftspacer"></span>
-                        <div class="dropupmenu__font" style="font-family: LiberationSans;">Trebuchet</div>
-                      </button>
+                      <div class="skeleton-8istxox1jc5"></div>
                     </div>
                   </div>
                 </div>
@@ -421,10 +439,7 @@ get_header();
                   <div class="dropupmenu">
                     <div class="dropupmenu__menubody">
                       <div class="dropupmenu__menutitle">Font size</div>
-                      <button class="dropupmenu__single" data-font="" data-type="fontFamily">
-                        <span class="dropupmenu__leftspacer"></span>
-                        <div class="dropupmenu__font" style="font-family: LiberationSans;">Trebuchet</div>
-                      </button>
+                      <div class="skeleton-8istxox1jc5"></div>
                     </div>
                   </div>
                 </div>
@@ -440,10 +455,7 @@ get_header();
                   <div class="dropupmenu">
                     <div class="dropupmenu__menubody">
                       <div class="dropupmenu__menutitle">Line height</div>
-                      <button class="dropupmenu__single" data-font="" data-type="fontFamily">
-                        <span class="dropupmenu__leftspacer"></span>
-                        <div class="dropupmenu__font">Arial</div>
-                      </button>
+                      <div class="skeleton-8istxox1jc5"></div>
                     </div>
                   </div>
                 </div>
@@ -459,14 +471,14 @@ get_header();
                   <div class="dropupmenu">
                     <div class="dropupmenu__menubody">
                       <div class="dropupmenu__menutitle"><?php esc_html_e( 'Pick a color', 'domain' ); ?></div>
-                      <button class="dropupmenu__single" data-font="" data-type="fontFamily">
+                      <div class="dropupmenu__picker" data-font="" data-type="fontFamily">
                         <span class="dropupmenu__leftspacer d-none"></span>
                         <div class="dropupmenu__font">
                           <div class="dropupmenu__colorpicker">
-                            <div class="the-color-picker"></div>
+                            <div class="the-color-picker" acp-color="#EFE9E7" acp-show-rgb="yes" acp-show-hsl="no" acp-show-hex="yes" acp-palette="PALETTE_MATERIAL_CHROME" acp-palette-editable acp-show-alpha></div>
                           </div>
                         </div>
-                      </button>
+                      </div>
                     </div>
                   </div>
                 </div>

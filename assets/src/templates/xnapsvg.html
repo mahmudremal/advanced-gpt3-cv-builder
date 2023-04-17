@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>CV using Snap.svg</title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/snap.svg/0.5.1/snap.svg-min.js"></script>
+
+	<style>
+		body {
+			background-color: #f5f5f5;
+			font-family: Arial, sans-serif;
+			font-size: 14px;
+			line-height: 1.5;
+			margin: 0;
+			padding: 0;
+		}
+		#container {
+			margin: 0 auto;
+			max-width: 800px;
+		}
+		h1, h2, h3, h4, h5, h6 {
+			color: #222;
+			font-weight: bold;
+			margin: 0;
+		}
+		p {
+			color: #666;
+			margin: 0;
+		}
+	</style>
+</head>
+<body>
+	<div id="container"></div>
+	<script>
+		var s = Snap("#container");
+
+		// Add your Snap.svg code here
+    // Header
+var header = s.g();
+
+// Name
+var name = s.text(0, 50, "Your Name");
+name.attr({
+    fontSize: 36,
+    fontWeight: "bold",
+    fill: "#222"
+});
+
+// Job title
+var jobTitle = s.text(0, 90, "Job Title");
+jobTitle.attr({
+    fontSize: 20,
+    fill: "#666"
+});
+
+header.add(name, jobTitle);
+
+// Center the header horizontally
+var headerBBox = header.getBBox();
+header.transform("translate(" + (s.width/2 - headerBBox.width/2) + ",0)");
+
+	</script>
+</body>
+</html>

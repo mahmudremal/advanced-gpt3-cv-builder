@@ -5,6 +5,7 @@
  */
  import moment from 'moment';
 
+
 const SVGJS = {
   wrapText: ( text, length, before = false, after = false, spacing = false, firstspacing = 0  ) => {
     let words = text.split(' '), lines = [], line = '';
@@ -26,9 +27,28 @@ const SVGJS = {
     });
     return tspanElements.join('');
   },
-  getDate: ( date, datefrmt, format ) => {
-    var current = moment( date );
-    return current.format( format );
+  wrapTextLength: ( text ) => {
+    return ( text.match(/<\/tspan>/g) || []).length;
+  },
+  getDate: ( date, format ) => {
+    // var dateObj = moment( date );
+    // var formattedDate = dateObj.format( format );
+    // return formattedDate;
+    var dateObj = new Date( date );
+    var month = dateObj.toLocaleString('default', { month: 'long' });
+    var year = dateObj.getFullYear();
+    var formattedDate = `${month}, ${year}`;
+    return formattedDate;
+
+  },
+  objectLength: ( obj ) =>  {
+    return ( ! Array.isArray( obj ) ) ? Object.keys( obj ).length : obj.length;
+  },
+  parseArgs: (args, defaults) => {
+    // Parse the arguments string into an object
+    const parsedArgs = typeof args === 'object' ? args : {};
+    // Merge the parsed arguments with the default values
+    return Object.assign( {}, defaults, parsedArgs );
   }
 }
 export default SVGJS;
