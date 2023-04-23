@@ -8,11 +8,14 @@
  import jsPDF from 'jspdf';
  import html2canvas from 'html2canvas';
  import flatpickr from "flatpickr";
+ import monthSelectPlugin from "flatpickr/dist/plugins/monthSelect";
  import Swal from "sweetalert2"; // "success", "error", "warning", "info" or "question"
  import ColorPicker from 'simple-color-picker';
  import SVGJS from './svg';
  import CVTemplate from './templates';
-
+ import { SVG } from '@svgdotjs/svg.js'
+//  import { Canvg } from 'canvg';
+ 
 ( function ( $ ) {
 	class FutureWordPress_Frontend {
 		/**
@@ -31,23 +34,24 @@
 			this.setup_hooks();
 		}
 		setup_hooks() {
-			window.FutureWordPress_Frontend = this;
+			window.FutureWordPress_Frontend = this;window._ = _;
 			window.Backbone = Backbone;window.jsPDF = jsPDF;
 			window.html2canvas = html2canvas;window.Swal = Swal;
-			window.flatpickr = flatpickr;window._ = _;
+			window.flatpickr = flatpickr;window.monthSelectPlugin = monthSelectPlugin;
 			window.CVTemplate = CVTemplate;window.SVGJS = SVGJS;
-			window.ColorPicker = ColorPicker;
+			window.ColorPicker = ColorPicker;window.SVG = SVG;
 			this.cvCanvas = false;this.svg = SVGJS;
 			this.form = document.querySelector( '#cvbuilder[name="cvbuilder"]' );
-			this.cv = {basiColor: "#a09aff",fontSize: "1",fontFamily: "'Roboto Slab', serif",lineHeight: "1",cvTemplate: "chrono"};
+			this.cv = {basiColor: "#f1ecda",fontSize: "1",fontFamily: "'Roboto Slab', serif",lineHeight: "1",cvTemplate: "chrono"};
 
 			this.init_functions();this.addanother_field();
 			this.profileImgUpload();this.profileImgRemove();
-			this.generate_submission();this.flat_picker();
-			this.generate_cv( this.generate_formdata() );
-			this.toolbar_init();
+			this.flat_picker();this.bulk_remover();
+			this.generate_submission();this.toolbar_init();
+			// this.generate_cv( this.generate_formdata() );
 		}
 		init_functions() {
+			const thisClass = this;
 			this.toast = Swal.mixin({
 				toast: true,
 				position: 'top-end',
@@ -58,7 +62,21 @@
 					toast.addEventListener( 'mouseenter', Swal.stopTimer )
 					toast.addEventListener( 'mouseleave', Swal.resumeTimer )
 				}
-			})
+			});
+			document.addEventListener('keydown', function(event) {
+				if (event.ctrlKey && (event.key === '/' || event.key === '?') ) {
+					event.preventDefault();
+					navigator.clipboard.readText()
+						.then(text => {
+							CVTemplate.choosen_template = text.replace( '`', '' );
+							console.log( 'Clipboard template updated' );
+							thisClass.update_cv();
+						})
+						.catch(err => {
+							console.error('Failed to read clipboard contents: ', err);
+						});
+				}
+			});
 		}
 		sendToServer( data ) {
 			const thisClass = this;var message;
@@ -90,13 +108,31 @@
 			});
 		}
 		flat_picker() {
+			const thisClass = this;var link, inputs, config, theInterval;
+			link = document.createElement( 'link' );link.rel = 'stylesheet';link.href = 'https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css';document.body.appendChild( link );
+			link = document.createElement( 'link' );link.rel = 'stylesheet';link.href = 'https://cdn.jsdelivr.net/npm/flatpickr/dist/plugins/monthSelect/style.css';document.body.appendChild( link );
+			setTimeout(() => {
+				theInterval = setInterval(() => {
+					inputs = document.querySelectorAll( '.the-flat-picker:not([data-handled])' );
+					inputs.forEach( ( el, ei ) => {
+						el.dataset.handled = true;
+						config = JSON.parse( el.dataset?.config??'{}' );
+						if( typeof el.dataset.onlyfor !== 'undefined' ) {
+							config.plugins = [new window.monthSelectPlugin()];
+						}
+						// flatpickr( el, {
+						// 	plugins: [new monthSelectPlugin()],
+						// 	dateFormat: "F Y",
+						// });
+						flatpickr( el, config );
+					} );
+				}, 100 );
+			}, 1000 );
+		}
+		color_picker() {
 			const thisClass = this;
-			flatpickr( '.the-flat-picker' );
-			// var link = document.createElement( 'link' );link.rel = 'stylesheet';
-			// link.href = 'https://cdn.jsdelivr.net/npm/@simonwep/pickr/dist/themes/monolith.min.css';
-			// document.head.appendChild( link );
 			thisClass.colorPicker = new ColorPicker({
-				color: '#FF0000',
+				color: thisClass.cv?.basiColor??'#FF0000',
 				// background: '#454545',
 				el: document.querySelector( '.the-color-picker' ),
 				// width: 200,
@@ -111,6 +147,7 @@
 					el.style.fill = color;
 				} );
     	} );
+			// 
 		}
 		profileImgUpload() {
 			const thisClass = this;var theInterval, reader, file, preview;
@@ -130,6 +167,7 @@
 								formdata.append( 'avater', el.files[0] );
 								formdata.append( '_nonce', thisClass.ajaxNonce );
 								thisClass.sendToServer( formdata );
+								thisClass.update_cv();
 							}
 							if (file) {
 								reader.readAsDataURL(file);
@@ -162,6 +200,7 @@
 								formdata.append( 'avater', '' );
 								formdata.append( '_nonce', thisClass.ajaxNonce );
 								thisClass.sendToServer( formdata );
+								thisClass.update_cv();
 							}
 						}
 					} );
@@ -188,6 +227,18 @@
 						} );
 					}
 			} );
+		}
+		bulk_remover() {
+			const thisClass = this;var buttons, theInterval;
+			theInterval = setInterval(() => {
+				buttons = document.querySelectorAll( '.bulk-remover:not([data-handled])' );
+				buttons.forEach( ( el, ei ) => {
+					el.dataset.handled = true;
+					el.addEventListener( 'click', ( e ) => {
+						el.parentElement.remove();thisClass.update_cv();
+					} );
+				} );
+			}, 100 );
 		}
 		transformObjectKeys(obj) {
 			const transformedObj = {};
@@ -216,7 +267,9 @@
 		
 		
 		get_template() {
-			if( typeof CVTemplate.choosen_template === 'undefined' ) {CVTemplate.choosen_template = CVTemplate.template5;}
+			if( typeof CVTemplate.choosen_template === 'undefined' ) {
+				CVTemplate.choosen_template = CVTemplate.template3;
+			}
 			return CVTemplate.choosen_template;
 		}
 		generate_template( cvData ) {
@@ -245,8 +298,8 @@
 			const thisClass = this;
 			thisClass.fixed.classList.remove( 'is-editable' );
 			html2canvas( thisClass.cvCanvas, { width: thisClass.cvCanvas.offsetWidth, height: thisClass.cvCanvas.offsetHeight } ).then(function(canvas) {
-				// console.log( canvas );
-				// cvCanvas.innerHTML = '';
+				console.log( canvas );
+				thisClass.cvCanvas.innerHTML = '';
 				thisClass.cvCanvas.appendChild( canvas );
 				// fixed.classList.remove( 'is-fixed' );
 				// convert the canvas to an image data URL
@@ -267,10 +320,21 @@
 				document.querySelectorAll( '.cvbuilderscreen .editescreen__card svg [style*=font-family]' ).forEach( ( el ) => {
 					el.style.fontFamily = thisClass.cv.fontFamily;
 				} );
+				// thisClass.cv.fontFamily
+				var fontFamily = thisClass.cvJson.fonts.find( fontFamily => fontFamily.font === thisClass.cv.fontFamily );
+				if( fontFamily ) {
+					var link = document.createElement( 'link' );link.id = 'cv-builder-fonts';link.rel = 'stylesheet';
+						link.href = fontFamily?.url??'';
+						var existing = document.querySelector( 'link#cv-builder-fonts' );
+						if( existing ) {existing.href = link.href;}
+						else {document.head.appendChild( link );}
+				}
 			}
 			if( typeof thisClass.cv.fontSize !== 'undefined' ) {
 				document.querySelectorAll( '.cvbuilderscreen .editescreen__card svg [style*=font-size]' ).forEach( ( el ) => {
 					var currentFontSize = window.getComputedStyle( el ).getPropertyValue( 'font-size' );
+					if( typeof el.dataset.fontSize === 'undefined' ) {el.dataset.fontSize = currentFontSize;}
+					else {currentFontSize = el.dataset.fontSize;}
 					var currentFontSizeNumeric = parseFloat( currentFontSize );
 					var currentFontSizeUnit = currentFontSize.replace( currentFontSizeNumeric, '' );
 					var newFontSize = ( currentFontSizeNumeric * thisClass.cv.fontSize ) + currentFontSizeUnit;
@@ -282,6 +346,8 @@
 			if( typeof thisClass.cv.lineHeight !== 'undefined' ) {
 				document.querySelectorAll( '.cvbuilderscreen .editescreen__card svg [dy]:not([dy="0"])' ).forEach( ( el ) => {
 					var currentDY = el.getAttribute( 'dy' );
+					if( typeof el.dataset.dy === 'undefined' ) {el.dataset.dy = currentDY;}
+					else {currentDY = el.dataset.dy;}
 					var currentDYNumeric = parseFloat( currentDY );
 					var currentDYUnit = currentDY.replace( currentDYNumeric, '' );
 					var newDY = ( currentDYNumeric * thisClass.cv.lineHeight ) + currentDYUnit;
@@ -300,7 +366,10 @@
 				json = thisClass.transformObjectKeys( json );
 				var preview = document.querySelector( '.profile-image-upload-preview' );
 				if( preview ) {json.cv.info.avater = preview.src;}
-				if( thisClass.cv ) {json.cv.tools = thisClass.cv;}
+				if( thisClass.cv ) {
+					if( thisClass.cv.tools ) {delete thisClass.cv.tools;}
+					json.cv.tools = thisClass.cv;
+				}
 				return json;
 			} else {
 				return {};
@@ -335,53 +404,35 @@
 				thisClass.sendToServer( formdata );
 		}
 		toolbar_setup() {
-			const thisClass = this;var templates, button, card, imgwrap, img, subtitle, json, spacer, div;
-			thisClass.cvJson = json = SVGJS.parseArgs( thisClass.lastJson.cv, {
-				templates: [
-					{
-						type: 'chrono',
-						img:  'https://www.jobseeker.com/api/documents/template-preview/resume/en/6b4e13bd-4f63-452b-98b9-36f8ab6a0bff',
-						title: 'Chrono',
-						fields: ['given_name', 'family_name', 'address', 'etc...' ],
-						template: ''
-					}
-				],
-				fonts: [
-					{title: 'Montserrat',font: "'Montserrat', sans-serif",weights: [],url: 'https://fonts.googleapis.com/css?family=Montserrat'},
-					{title: 'Lora',font: "'Lora', serif",weights: [],url: 'https://fonts.googleapis.com/css?family=Lora'},
-					{title: 'Open Sans',font: "'Open Sans', sans-serif",weights: [],url: 'https://fonts.googleapis.com/css?family=Open+Sans'},
-					{title: 'Roboto Slab',font: "'Roboto Slab', serif",weights: [],url: 'https://fonts.googleapis.com/css?family=Roboto+Slab'},
-					{title: 'EB Garamond',font: "'EB Garamond', serif",weights: [],url: 'https://fonts.googleapis.com/css?family=EB+Garamond'},
-					{title: 'Great Vibes',font: "'Great Vibes', cursive",weights: [],url: 'https://fonts.googleapis.com/css?family=Great+Vibes'},
-					{title: 'Raleway',font: "'Raleway', sans-serif",weights: ['bold'],url: 'https://fonts.googleapis.com/css?family=Raleway'},
-				],
-				fontsizes: [
-					{title: 'XXL',size: 1.75},
-					{title: 'XL',size: 1.5},
-					{title: 'X',size: 1.25},
-					{title: 'M',size: 1},
-					{title: 'S',size: 0.75},
-					{title: 'XS',size: 0.5},
-					{title: 'XXS',size: 0.25},
-				],
-				lineheights: [
-					{title: 1.8,height:  1.8},
-					{title: 1.6,height:  1.6},
-					{title: 1.4,height:  1.4},
-					{title: 1.2,height:  1.2},
-					{title: 1.0,height:  1.0},
-					{title: 0.8,height:  0.8},
-					{title: 0.6,height:  0.6},
-					{title: 0.4,height:  0.4},
-					{title: 0.2,height:  0.2},
-				]
+			const thisClass = this;var templates, template, button, card, imgwrap, img, subtitle, json, spacer, div, tickSvg, lastJson;
+			lastJson = thisClass.lastJson;
+			thisClass.cvJson = json = SVGJS.parseArgs( lastJson.tools, {
+				templates: [], fonts: [], fontsizes: [], lineheights: []
 			} );
+			thisClass.cv = lastJson.cv?.tools??{};
+			if( typeof thisClass.cv === 'object' ) {
+				thisClass.cv = {
+					basiColor: thisClass.cv?.basiColor??'',
+					cvTemplate: thisClass.cv?.cvTemplate??'',
+					fontFamily: thisClass.cv?.fontFamily??'',
+					fontSize: thisClass.cv?.fontSize??''
+				};
+				// delete thisClass.cv.tools;
+			}
+			template = thisClass.cvJson.templates.find( template => template.type === thisClass.cv.cvTemplate );
+			if( typeof template === 'object' ) {
+				CVTemplate.choosen_template = template.template;
+			}
+			// else {console.log( template );}
+			
+			tickSvg = '<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 md:w-4 me-2"><path stroke-linecap="round" stroke-linejoin="round" d="m4.5 12.75 6 6 9-13.5"></path></svg>';
 			templates = document.querySelector( '.choose-templates' );
 			if( templates ) {
 				templates.innerHTML = '';
 				json.templates.forEach( ( e, i ) => {
 					button = document.createElement( 'button' );button.classList.add( 'templates__single' );
 					button.dataset.font = e.type;button.dataset.type = 'cvTemplate';
+					if( e.type == thisClass.cv.cvTemplate ) {button.classList.add( 'is-active' );}
 					card = document.createElement( 'div' );card.classList.add( 'templates__card' );
 					imgwrap = document.createElement( 'div' );imgwrap.classList.add( 'templates__imgwrap' );
 					img = document.createElement( 'img' );img.src = e.img;img.alt = '';
@@ -398,6 +449,7 @@
 					button = document.createElement( 'button' );button.classList.add( 'dropupmenu__single' );
 					button.dataset.font = e.font;button.dataset.order = i;button.dataset.type = 'fontFamily';
 					spacer = document.createElement( 'span' );spacer.classList.add( 'dropupmenu__leftspacer' );
+					if( e.font == thisClass.cv.fontFamily ) {spacer.innerHTML = tickSvg;}
 					div = document.createElement( 'div' );div.classList.add( 'dropupmenu__font' );div.innerHTML = e.title;
 					button.appendChild( spacer );button.appendChild( div );templates.appendChild( button );
 				} );
@@ -409,6 +461,7 @@
 					button = document.createElement( 'button' );button.classList.add( 'dropupmenu__single' );
 					button.dataset.font = e.size;button.dataset.order = i;button.dataset.type = 'fontSize';
 					spacer = document.createElement( 'span' );spacer.classList.add( 'dropupmenu__leftspacer' );
+					if( e.size == thisClass.cv.fontSize ) {spacer.innerHTML = tickSvg;}
 					div = document.createElement( 'div' );div.classList.add( 'dropupmenu__font' );div.innerHTML = e.title;
 					button.appendChild( spacer );button.appendChild( div );templates.appendChild( button );
 				} );
@@ -420,11 +473,15 @@
 					button = document.createElement( 'button' );button.classList.add( 'dropupmenu__single' );
 					button.dataset.font = e.height;button.dataset.order = i;button.dataset.type = 'lineHeight';
 					spacer = document.createElement( 'span' );spacer.classList.add( 'dropupmenu__leftspacer' );
+					if( e.height == thisClass.cv.lineHeight ) {spacer.innerHTML = tickSvg;}
 					div = document.createElement( 'div' );div.classList.add( 'dropupmenu__font' );div.innerHTML = e.title;
 					button.appendChild( spacer );button.appendChild( div );templates.appendChild( button );
 				} );
 			}
-			setTimeout(() => {thisClass.toolbar_events();}, 100 );
+			setTimeout(() => {
+				thisClass.toolbar_events();thisClass.color_picker();
+				thisClass.generate_cv( thisClass.generate_formdata() );
+			}, 100 );
 		}
 		toolbar_events() {
 			const thisClass = this;
@@ -482,7 +539,15 @@
 				el.addEventListener( 'click', ( e ) => {
 					var left = ( el.parentElement ) ? el.parentElement.querySelectorAll( '.dropupmenu__leftspacer svg' ) : [];left.forEach( ( lf, li ) => {lf.innerHTML = '';} );
 					var left = el.querySelector( '.dropupmenu__leftspacer' );if( left ) {left.innerHTML = tick;}
-					thisClass.cv[ el.dataset.type ] = el.dataset.font;thisClass.update_cv();
+					thisClass.cv[ el.dataset.type ] = el.dataset.font;
+					if( el.dataset.type == 'fontFamily' ) {
+						var link = document.createElement( 'link' );link.id = 'cv-builder-fonts';link.rel = 'stylesheet';
+						link.href = thisClass.cvJson.fonts[ el.dataset.order ]?.url??'';
+						var existing = document.querySelector( 'link#cv-builder-fonts' );
+						if( existing ) {existing.href = link.href;}
+						else {document.head.appendChild( link );}
+					}
+					thisClass.update_cv();
 				} );
 			} );
 			var templates = document.querySelectorAll( '.choose-templates .templates__single' );
@@ -491,22 +556,19 @@
 					var past = ( el.parentElement ) ? el.parentElement.querySelectorAll( '.is-active' ) : [];
 					past.forEach( ( pl, pi ) => {pl.classList.remove( 'is-active' );} );el.classList.add( 'is-active' );
 					thisClass.cv[ el.dataset.type ] = el.dataset.font;
-					if( el.dataset.type == 'fontFamily' ) {
-						var link = document.createElement( 'link' );link.id = 'cv-builder-fonts';link.rel = 'stylesheet';
-						link.href = thisClass.cvJson.fonts[ el.dataset.order ]?.url??'';document.head.appendChild( link );
-					}
 					if( el.dataset.type == 'cvTemplate' ) {
-						document.querySelectorAll( '#cvbuilder .form-group[data-field]' ).forEach( ( el, eli ) => {
-							el.style.display = 'none';
+						document.querySelectorAll( '#cvbuilder [data-field]' ).forEach( ( df, dfi ) => {
+							df.style.display = 'none';
 							var template = thisClass.cvJson.templates.find( template => template.type === el.dataset.font );
 							if( typeof template !== 'undefined' ) {
 								CVTemplate.choosen_template = template.template;
 								template.fields.forEach( ( fld, fli ) => {
-									var field = document.querySelectorAll( '#cvbuilder .form-group[data-field="' + fld + '"]' );
-									if( field ) {field.style.display = 'block';}
+									var fields = document.querySelectorAll( '#cvbuilder [data-field="' + fld + '"]' );
+									// console.log( 'field', fields );
+									fields.forEach( ( fld, fldi ) => {fld.style.display = 'block';} );
 								} );
-								console.log( template );
 							}
+							// 
 						} );
 					}
 					thisClass.update_cv();

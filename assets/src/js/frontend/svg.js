@@ -7,8 +7,9 @@
 
 
 const SVGJS = {
-  wrapText: ( text, length, before = false, after = false, spacing = false, firstspacing = 0  ) => {
+  wrapText: ( text, length, before = false, after = false, spacing = false, firstspacing = 0, args = {}  ) => {
     let words = text.split(' '), lines = [], line = '';
+    args.text = text;args.length = length;args.spacing = spacing;
   
     for (let i = 0; i < words.length; i++) {
       let word = words[i];
@@ -19,11 +20,15 @@ const SVGJS = {
     }
     lines.push(line.trim());
   
-    let tspanElements = lines.map((line, index) => {
-      let dy = ( index > 0 ) ? ( spacing ) ? spacing : '1.2em' : firstspacing;
-      var beforeEl  = ( ! before ) ? `<tspan x="0" dy="${dy}">` : before.replace( '{{dy}}', dy ),
+    let tspanElements = lines.map( (line, index) => {
+      let dy = ( index > 0 ) ? (
+        ( spacing ) ? spacing : '1.2em'
+      ) : (
+        ( firstspacing ) ? firstspacing : '0'
+      );args.line = line;
+      var beforeEl  = ( ! before ) ? `<tspan x="0" dy="${dy}">` : before.replace( '{{dy}}', dy ).replace( '{{x}}', SVGJS.argsParser( args, 'x' ) ),
           afterEl   = ( ! after ) ? `</tspan>` : after;
-      return beforeEl + line + afterEl;
+      return ( line != '' ) ? beforeEl + line + afterEl : '';
     });
     return tspanElements.join('');
   },
@@ -49,6 +54,26 @@ const SVGJS = {
     const parsedArgs = typeof args === 'object' ? args : {};
     // Merge the parsed arguments with the default values
     return Object.assign( {}, defaults, parsedArgs );
+  },
+  argsParser( args, of ) {
+    var returned = 0;
+    if( args.x && args.xsum && args.xfrom ) {
+      switch( args.x ) {
+        case 'left':
+          returned = ( args.xfrom + ( args.line.length * args.xsum ) );
+          break;
+        case 'middle':
+          returned = args.xfrom;
+          break;
+        case 'right':
+          returned = ( args.xfrom - ( args.line.length * args.xsum ) );
+          break;
+        default:
+          returned = 0;
+          break;
+      }
+    }
+    return returned;
   }
 }
 export default SVGJS;

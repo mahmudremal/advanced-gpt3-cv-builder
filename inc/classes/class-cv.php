@@ -19,12 +19,16 @@ class Cv {
 		$this->setup_hooks();
 	}
 	protected function setup_hooks() {
+		add_action( 'wp_ajax_futurewordpress/project/advancedgpt3cvbuilder/cv/create', [ $this, 'cvCreate' ], 10, 0 );
+		add_action( 'wp_ajax_nopriv_futurewordpress/project/advancedgpt3cvbuilder/cv/create', [ $this, 'cvCreate' ], 10, 0 );
 		add_action( 'wp_ajax_futurewordpress/project/advancedgpt3cvbuilder/filesystem/uploadavater', [ $this, 'uploadAvater' ], 10, 0 );
+		add_action( 'wp_ajax_nopriv_futurewordpress/project/advancedgpt3cvbuilder/filesystem/uploadavater', [ $this, 'uploadAvater' ], 10, 0 );
 		add_action( 'wp_ajax_futurewordpress/project/advancedgpt3cvbuilder/filesystem/removeavater', [ $this, 'removeavater' ], 10, 0 );
+		add_action( 'wp_ajax_nopriv_futurewordpress/project/advancedgpt3cvbuilder/filesystem/removeavater', [ $this, 'removeavater' ], 10, 0 );
 		add_action( 'wp_ajax_futurewordpress/project/advancedgpt3cvbuilder/cv/update', [ $this, 'updateCV' ], 10, 0 );
-		add_action( 'wp_ajax_noprev_futurewordpress/project/advancedgpt3cvbuilder/cv/update', [ $this, 'updateCV' ], 10, 0 );
+		add_action( 'wp_ajax_nopriv_futurewordpress/project/advancedgpt3cvbuilder/cv/update', [ $this, 'updateCV' ], 10, 0 );
 		add_action( 'wp_ajax_futurewordpress/project/advancedgpt3cvbuilder/cv/templates', [ $this, 'cvTemplates' ], 10, 0 );
-		add_action( 'wp_ajax_noprev_futurewordpress/project/advancedgpt3cvbuilder/cv/templates', [ $this, 'cvTemplates' ], 10, 0 );
+		add_action( 'wp_ajax_nopriv_futurewordpress/project/advancedgpt3cvbuilder/cv/templates', [ $this, 'cvTemplates' ], 10, 0 );
 	}
 	public function uploadAvater() {
 		check_ajax_referer( 'futurewordpress/project/advancedgpt3cvbuilder/verify/nonce', '_nonce' );
@@ -71,20 +75,14 @@ class Cv {
 	public function cvTemplates() {
 		check_ajax_referer( 'futurewordpress/project/advancedgpt3cvbuilder/verify/nonce', '_nonce' );
 		if( ! isset( $_POST[ 'cv_id' ] ) || empty( $_POST[ 'cv_id' ] ) ) {wp_send_json_error( __( 'CV not identified.', 'domain' ), 200 );}
-		$post_id = $_POST[ 'cv_id' ];
+		$post_id = $_POST[ 'cv_id' ];$cvTemplates = [];
 		$has_meta = get_post_meta( $post_id, '_data', true );
 		if( ! is_wp_error( $has_meta ) ) {
-			$args = [];
-			$args[ 'cv' ] = [
-				'templates' => [
-					[
-						'type' => 'chrono',
-						'img' =>  'https://www.jobseeker.com/api/documents/template-preview/resume/en/6b4e13bd-4f63-452b-98b9-36f8ab6a0bff',
-						'title' => 'Chrono',
-						'fields' => ['given_name', 'family_name', 'address', 'etc...' ],
-						'template' => ''
-					]
-				],
+			include_once ADVANCEDGPT3CVBUILDER_PROJECT_DIR_PATH . '/templates/cv/index.php';
+			$args = (array) json_decode( $has_meta, true );
+			$args[ 'cv' ] = isset( $args[ 'cv' ] ) ? $args[ 'cv' ] : [];
+			$args[ 'tools' ] = [
+				'templates' => $cvTemplates,
 				'fonts' => [
 					['title' => 'Montserrat','font' => "'Montserrat', sans-serif",'weights' => [],'url' => 'https://fonts.googleapis.com/css?family=Montserrat'],
 					['title' => 'Lora','font' => "'Lora', serif",'weights' => [],'url' => 'https://fonts.googleapis.com/css?family=Lora'],
@@ -119,6 +117,29 @@ class Cv {
 			wp_send_json_success( $args, 200 );
 		} else {
 			wp_send_json_error( $has_meta->get_error_message() );
+		}
+	}
+	public function cvCreate() {
+		check_ajax_referer( 'futurewordpress/project/advancedgpt3cvbuilder/verify/nonce', '_nonce' );
+		$return = wp_insert_post( [
+			'post_title'    => __( 'My Resume', 'domain' ),
+			'post_content'  => '',
+			'post_status'   => 'publish',
+			'post_type'   	=> 'resume',
+			'post_author'   => 1,
+			'post_category' => array( 8,39 )
+		], true );
+		if( ! is_wp_error( $return ) ) {
+			$json = file_get_contents( ADVANCEDGPT3CVBUILDER_PROJECT_DIR_PATH . '/templates/cv/first-meta.json' );
+			$is_done = update_post_meta( $return, '_data', $json );
+			wp_send_json_success( [
+				'message' => __( 'Great job! Your resume has been created successfully. We are now redirecting you to the CV builder screen. Please wait for a moment while we take you there.', 'domain' ),
+				'hooks'   => [ 'cv-crearted-success-do-redirect' ],
+				'cv'			=> $return,
+				'edit'		=> site_url( '/app/resumes/' . $return . '/edit/' )
+			] );
+		} else {
+			wp_send_json_error( __( 'Failed to create resume. ' . $return->get_error_message(), 'domain' ) );
 		}
 	}
 }

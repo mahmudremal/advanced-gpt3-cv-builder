@@ -1,4 +1,4 @@
-import './frontend/index';
+import './frontend/global';
 // import './frontend/map';
 // import './modules/dropzone';
 // import './modules/videojs';
@@ -9,7 +9,7 @@ import './frontend/index';
 // import './modules/youtube';
 
 // Styles
-import '../sass/public.scss';
+// import '../sass/public.scss';
 
 // Images.
 // import '../img/cats.jpg';

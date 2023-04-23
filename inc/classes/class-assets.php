@@ -40,17 +40,22 @@ class Assets {
 
 	public function register_styles() {
 		// Register styles.
-		wp_register_style( 'cvbuilder', 'https://universal-resume-a4.netlify.app/build.css', [], false, 'all' );
-		wp_register_style( 'flatpickr', ADVANCEDGPT3CVBUILDER_PROJECT_BUILD_LIB_URI . '/css/flatpickr.min.css', [], false, 'all' );
-		wp_register_style( 'bootstrap', ADVANCEDGPT3CVBUILDER_PROJECT_BUILD_LIB_URI . '/css/bootstrap.min.css', [], false, 'all' );
-		wp_register_style( 'AdvancedGPT3CVbuilder-builder', ADVANCEDGPT3CVBUILDER_PROJECT_BUILD_LIB_URI . '/css/resume-builder.css', [], false, 'all' );
 		wp_register_style( 'AdvancedGPT3CVbuilder-public', ADVANCEDGPT3CVBUILDER_PROJECT_BUILD_CSS_URI . '/public.css', [], $this->filemtime( ADVANCEDGPT3CVBUILDER_PROJECT_BUILD_CSS_DIR_PATH . '/public.css' ), 'all' );
-		// Enqueue Styles.
-		wp_enqueue_style( 'cvbuilder' );
-		wp_enqueue_style( 'flatpickr' );wp_enqueue_style( 'bootstrap' );
-		wp_enqueue_style( 'AdvancedGPT3CVbuilder-builder' );
 		wp_enqueue_style( 'AdvancedGPT3CVbuilder-public' );
-		// if( $this->allow_enqueue() ) {}
+
+		if( $this->allow_enqueue() ) {
+			// wp_register_style( 'cvbuilder', 'https://universal-resume-a4.netlify.app/build.css', [], false, 'all' );
+			// wp_register_style( 'flatpickr', ADVANCEDGPT3CVBUILDER_PROJECT_BUILD_LIB_URI . '/css/flatpickr.min.css', [], false, 'all' );
+			// wp_register_style( 'bootstrap', ADVANCEDGPT3CVBUILDER_PROJECT_BUILD_LIB_URI . '/css/bootstrap.min.css', [], false, 'all' );
+			wp_register_style( 'AdvancedGPT3CVbuilder-forms', ADVANCEDGPT3CVBUILDER_PROJECT_BUILD_LIB_URI . '/css/resume-builder.css', [], false, 'all' );
+			wp_register_style( 'AdvancedGPT3CVbuilder-builder', ADVANCEDGPT3CVBUILDER_PROJECT_BUILD_CSS_URI . '/builder.css', [], $this->filemtime( ADVANCEDGPT3CVBUILDER_PROJECT_BUILD_CSS_DIR_PATH . '/builder.css' ), 'all' );
+			// Enqueue Styles.
+			// wp_enqueue_style( 'cvbuilder' );
+			// wp_enqueue_style( 'flatpickr' );
+			// wp_enqueue_style( 'bootstrap' );
+			wp_enqueue_style( 'AdvancedGPT3CVbuilder-forms' );
+			wp_enqueue_style( 'AdvancedGPT3CVbuilder-builder' );
+		}
 	}
 	public function register_scripts() {
 		// Register scripts.
@@ -58,13 +63,17 @@ class Assets {
 		wp_register_script( 'AdvancedGPT3CVbuilder-public', ADVANCEDGPT3CVBUILDER_PROJECT_BUILD_JS_URI . '/public.js?v=' . $filemtime, ['jquery'], $filemtime, true );
 		// Enqueue Scripts.
 		wp_enqueue_script( 'AdvancedGPT3CVbuilder-public' );
-		// if( $this->allow_enqueue() ) {}
+		if( $this->allow_enqueue() ) {
+			$filemtime = $this->filemtime( ADVANCEDGPT3CVBUILDER_PROJECT_BUILD_JS_DIR_PATH . '/builder.js' );
+			wp_register_script( 'AdvancedGPT3CVbuilder-builder', ADVANCEDGPT3CVBUILDER_PROJECT_BUILD_JS_URI . '/builder.js?v=' . $filemtime, ['jquery'], $filemtime, true );
+			wp_enqueue_script( 'AdvancedGPT3CVbuilder-builder' );
+		}
 		wp_localize_script( 'AdvancedGPT3CVbuilder-public', 'fwpSiteConfig', apply_filters( 'futurewordpress/project/advancedgpt3cvbuilder/javascript/siteconfig', [
 			'videoClips'		=> [],
 		] ) );
 	}
 	private function allow_enqueue() {
-		return ( function_exists( 'is_checkout' ) && ( is_checkout() || is_order_received_page() || is_wc_endpoint_url( 'order-received' ) ) );
+		return true;
 	}
 
 	/**

@@ -317,12 +317,19 @@ body {
   display: block;
   overflow: hidden;
 }
-
-
+.flatpickr-current-month .flatpickr-monthDropdown-months {
+  display: unset;
+}
+body.blog.fwp-body {
+  header#header, .widget-visible {
+    display: none;
+  }
+}
 .cvbuilderscreen {
   .formscreen {
     left: 0;
-    top: 66px;
+    top: 0;
+    // top: 66px;
     width: 50%;
     bottom: 0;
     position: fixed;
@@ -336,22 +343,71 @@ body {
       max-width: 42rem;
       margin-left: auto;
       margin-right: auto;
+      .avater-change-buttons {
+        margin: auto;
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        align-content: center;
+        align-items: center;
+        &>div label {
+          margin: unset;
+        }
+      }
     }
     // .new-skills, .new-edu, .new-exp, .new-skills, .new-interest, .new-language, .new-social, .new-hobby
-    .block-container > div:first-child > div {
-      margin: auto;
-      border: 1px solid #ebebeb;
-      margin-top: 5px;
-      margin-bottom: 5px;
-      padding: 5px;
-      border-radius: 5px;
-      level {
+    // .block-container > div:first-child > div,
+    .all-bulks__category {
+      border: 1px solid #eee;
+      padding: 20px 20px 30px;
+      margin-bottom: 30px;
+      background: #fff;
+      box-shadow: 0px 2px 27px 0px #9AA1AB12;
+      &> div {
+        margin: auto;
+        padding: 5px;
         margin-top: 5px;
+        margin-bottom: 5px;
+        border-radius: 5px;
+        position: relative;
+        border: 1px solid #ebebeb;
+        level {
+          margin-top: 5px;
+        }
+      }
+    }
+    .bulk-remover {
+      top: 10px;
+      right: 10px;
+      left: unset;
+      padding: 5px;
+      display: flex;
+      cursor: pointer;
+      position: absolute;
+      .remover-text {
+        display: none;
+      }
+      .remover-icon {
+        display: flex;
+      }
+    }
+    .add-blk {
+      .fa-plus {
+        float: right;
+        font-size: 29px;
+        color: #e0e0e0;
+        margin-right: 4px;
+      }
+      span {
+        float: right;
+        margin: 2px 7px;
+        font-weight: bold;
       }
     }
   }
   .editescreen {
-    top: 66px;
+    // top: 66px;
+    top: 0;
     right: 0;
     bottom: 0;
     width: 50%;
@@ -699,8 +755,21 @@ body {
       width: 100%;
     }
   }
-  // #color-select + .dropupmenu {
-  //   display: none;
-  // }
+  @include mq($until: 992px) {
+    .formscreen, .editescreen {
+      width: unset;
+      top: unset;
+      position: relative;
+      height: auto;
+    }
+    .cvbuilderscreen .tool-bar {
+      position: relative;
+      margin: auto;
+      top: unset;
+      left: unset;
+      right: unset;
+      bottom: unset;
+    }
+  }
 }
 @keyframes shineForSkeleton-8istxox1jc5 {to {-webkit-mask-position: 120% 0}}

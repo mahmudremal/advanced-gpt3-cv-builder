@@ -22,7 +22,7 @@ const BUILD_DIR = path.resolve( __dirname, 'build' );
 const entry = {
 	public: JS_DIR + '/public.js',
 	admin: JS_DIR + '/admin.js',
-	// checkout: JS_DIR + '/checkout.js',
+	builder: JS_DIR + '/builder.js',
 	// widgets: JS_DIR + '/widgets.js',
 	// single: JS_DIR + '/single.js',
 	// editor: JS_DIR + '/editor.js',
