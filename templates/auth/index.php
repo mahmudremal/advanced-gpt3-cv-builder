@@ -32,7 +32,7 @@ if( ! is_user_logged_in() ) {
        * Need to get access token and using ti gather user information form api, then register, if exist, loggedin, then redirect tp dashboard.
        */
       // print_r( get_user_meta( get_current_user_id(), 'google_auth_code', true ) );
-      // wp_die( __( 'Is not function yet', 'domain' ) );
+      // wp_die( __( 'Is not function yet', 'advanced-gpt3-cv-builder' ) );
     }
   } else {
     // Endpoint is not `redirect` | `capture`

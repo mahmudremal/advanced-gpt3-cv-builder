@@ -320,8 +320,11 @@ body {
 .flatpickr-current-month .flatpickr-monthDropdown-months {
   display: unset;
 }
-body.blog.fwp-body {
+body.blog {
   header#header, .widget-visible {
+    display: none;
+  }
+  .et-mobile-panel-wrapper.dt-hide.etheme-sticky-panel.et_element.pos-fixed.bottom.full-width {
     display: none;
   }
 }
@@ -444,6 +447,17 @@ body.blog.fwp-body {
         // vertical-align: middle;
         width: 100%;
         height: auto;
+      }
+    }
+    &__preload {
+      top: 50%;
+      left: 50%;
+      margin: auto;
+      position: absolute;
+      transform: translate(-50%, -50%);
+      svg {
+        scale: 3;
+        background: none;
       }
     }
   }

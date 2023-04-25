@@ -59,22 +59,22 @@ class Cv {
 		$oldFilePATH = str_replace( [site_url('/')], [ABSPATH], $_avatar );
 		if( $oldFilePATH && ! empty( $oldFilePATH ) && file_exists( $oldFilePATH ) && ! is_dir( $oldFilePATH ) ) {unlink( $oldFilePATH );}
 		delete_post_meta( $cv_id, '_avatar', $_avatar );
-		wp_send_json_success( __( 'Image removed successfully', 'domain' ) );
+		wp_send_json_success( __( 'Image removed successfully', 'advanced-gpt3-cv-builder' ) );
 	}
 	public function updateCV() {
 		check_ajax_referer( 'futurewordpress/project/advancedgpt3cvbuilder/verify/nonce', '_nonce' );
-		if( ! isset( $_POST[ 'cv_id' ] ) || empty( $_POST[ 'cv_id' ] ) ) {wp_send_json_error( __( 'CV not identified', 'domain' ), 200 );}
+		if( ! isset( $_POST[ 'cv_id' ] ) || empty( $_POST[ 'cv_id' ] ) ) {wp_send_json_error( __( 'CV not identified', 'advanced-gpt3-cv-builder' ), 200 );}
 		$post_id = $_POST[ 'cv_id' ];
 		$is_done = update_post_meta( $post_id, '_data', $_POST[ '_data' ] );
 		if( ! is_wp_error( $is_done ) ) {
-			wp_send_json_success( isset( $_POST[ '_nomsg' ] ) ? [] : __( 'CV Updated Successfully', 'domain' ), 200 );
+			wp_send_json_success( isset( $_POST[ '_nomsg' ] ) ? [] : __( 'CV Updated Successfully', 'advanced-gpt3-cv-builder' ), 200 );
 		} else {
 			wp_send_json_error( $is_done->get_error_message() );
 		}
 	}
 	public function cvTemplates() {
 		check_ajax_referer( 'futurewordpress/project/advancedgpt3cvbuilder/verify/nonce', '_nonce' );
-		if( ! isset( $_POST[ 'cv_id' ] ) || empty( $_POST[ 'cv_id' ] ) ) {wp_send_json_error( __( 'CV not identified.', 'domain' ), 200 );}
+		if( ! isset( $_POST[ 'cv_id' ] ) || empty( $_POST[ 'cv_id' ] ) ) {wp_send_json_error( __( 'CV not identified.', 'advanced-gpt3-cv-builder' ), 200 );}
 		$post_id = $_POST[ 'cv_id' ];$cvTemplates = [];
 		$has_meta = get_post_meta( $post_id, '_data', true );
 		if( ! is_wp_error( $has_meta ) ) {
@@ -122,7 +122,7 @@ class Cv {
 	public function cvCreate() {
 		check_ajax_referer( 'futurewordpress/project/advancedgpt3cvbuilder/verify/nonce', '_nonce' );
 		$return = wp_insert_post( [
-			'post_title'    => __( 'My Resume', 'domain' ),
+			'post_title'    => __( 'My Resume', 'advanced-gpt3-cv-builder' ),
 			'post_content'  => '',
 			'post_status'   => 'publish',
 			'post_type'   	=> 'resume',
@@ -133,13 +133,13 @@ class Cv {
 			$json = file_get_contents( ADVANCEDGPT3CVBUILDER_PROJECT_DIR_PATH . '/templates/cv/first-meta.json' );
 			$is_done = update_post_meta( $return, '_data', $json );
 			wp_send_json_success( [
-				'message' => __( 'Great job! Your resume has been created successfully. We are now redirecting you to the CV builder screen. Please wait for a moment while we take you there.', 'domain' ),
+				'message' => __( 'Great job! Your resume has been created successfully. We are now redirecting you to the CV builder screen. Please wait for a moment while we take you there.', 'advanced-gpt3-cv-builder' ),
 				'hooks'   => [ 'cv-crearted-success-do-redirect' ],
 				'cv'			=> $return,
 				'edit'		=> site_url( '/app/resumes/' . $return . '/edit/' )
 			] );
 		} else {
-			wp_send_json_error( __( 'Failed to create resume. ' . $return->get_error_message(), 'domain' ) );
+			wp_send_json_error( __( 'Failed to create resume. ' . $return->get_error_message(), 'advanced-gpt3-cv-builder' ) );
 		}
 	}
 }

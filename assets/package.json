@@ -79,6 +79,7 @@
 		"apexcharts": "^3.36.3",
 		"backbone": "^1.4.1",
 		"bootstrap": "^5.3.0-alpha1",
+		"canvg": "^4.0.1",
 		"chatgpt": "^5.0.6",
 		"codemirror": "^6.0.1",
 		"cropperjs": "^1.5.13",

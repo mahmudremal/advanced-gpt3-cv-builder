@@ -172,11 +172,11 @@ get_header();
                       <div class="form-row">
                         <div class="col">
                           <label><?php esc_html_e( 'From year:', 'domian' ); ?></label>
-                          <input type="text" name="cv[exp][<?php echo esc_attr( $sortOrder ); ?>][from]" value="<?php echo esc_attr( $cv->exp[$expI]->from ); ?>" class="form-control the-flat-picker" data-config="<?php echo esc_attr( json_encode( [ 'dateFormat' => 'F Y', 'defaultDate' => $cv->edu[$expI]->from ] ) ); ?>" data-onlyfor="month">
+                          <input type="text" name="cv[exp][<?php echo esc_attr( $sortOrder ); ?>][from]" value="<?php echo esc_attr( $cv->exp[$expI]->from ); ?>" class="form-control the-flat-picker" data-config="<?php echo esc_attr( json_encode( [ 'dateFormat' => 'F Y', 'defaultDate' => $cv->exp[$expI]->from ] ) ); ?>" data-onlyfor="month">
                         </div>
                         <div class="col">
                           <label><?php esc_html_e( 'To year (optional=present):', 'domian' ); ?></label>
-                          <input type="text" name="cv[exp][<?php echo esc_attr( $sortOrder ); ?>][to]" value="<?php echo esc_attr( $cv->exp[$expI]->to ); ?>" class="form-control the-flat-picker" data-config="<?php echo esc_attr( json_encode( [ 'dateFormat' => 'F Y', 'defaultDate' => $cv->edu[$expI]->to ] ) ); ?>" data-onlyfor="month">
+                          <input type="text" name="cv[exp][<?php echo esc_attr( $sortOrder ); ?>][to]" value="<?php echo esc_attr( $cv->exp[$expI]->to ); ?>" class="form-control the-flat-picker" data-config="<?php echo esc_attr( json_encode( [ 'dateFormat' => 'F Y', 'defaultDate' => $cv->exp[$expI]->to ] ) ); ?>" data-onlyfor="month">
                         </div>
                       </div>
                       <label><?php esc_html_e( 'Workload:', 'domian' ); ?></label>
@@ -410,7 +410,7 @@ get_header();
         <div class="editescreen">
           <div class="editescreen__wrapper">
             <div class="editescreen__card">
-              <canvas></canvas>
+              <!-- <canvas></canvas> -->
               <!-- svg -->
               <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" style="margin:auto;background:#fff;display:block;" width="200px" height="200px" viewBox="0 0 100 100" preserveAspectRatio="xMidYMid">
                 <circle cx="50" cy="50" r="0" fill="none" stroke="#e90c59" stroke-width="1">
@@ -514,8 +514,8 @@ get_header();
                   </button>
                   <div class="dropupmenu">
                     <div class="dropupmenu__menubody">
-                      <div class="dropupmenu__menutitle"><?php esc_html_e( 'Pick a color', 'domain' ); ?></div>
-                      <div class="dropupmenu__picker" data-font="" data-type="fontFamily">
+                      <div class="dropupmenu__menutitle"><?php esc_html_e( 'Pick a color', 'advanced-gpt3-cv-builder' ); ?></div>
+                      <div class="dropupmenu__picker" data-font="" data-type="basicColor">
                         <span class="dropupmenu__leftspacer d-none"></span>
                         <div class="dropupmenu__font">
                           <div class="dropupmenu__colorpicker">
@@ -539,9 +539,11 @@ get_header();
                     <div class="dropupmenu__menubody">
                       <div class="dropupmenu__menutitle">Download</div>
                       <button class="dropupmenu__single download-as-png" data-font="png" data-type="download">
+                        <span class="dropupmenu__leftspacer"></span>
                         <div class="dropupmenu__font">Download as PNG</div>
                       </button>
                       <button class="dropupmenu__single download-as-pdf" data-font="pdf" data-type="download">
+                        <span class="dropupmenu__leftspacer"></span>
                         <div class="dropupmenu__font">Download as PDF</div>
                       </button>
                     </div>
