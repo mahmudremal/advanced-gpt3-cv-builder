@@ -70,6 +70,7 @@
 	],
 	"dependencies": {
 		"@amcharts/amcharts5": "^5.2.45",
+		"@babel/polyfill": "^7.12.1",
 		"@popperjs/core": "^2.11.6",
 		"@simonwep/pickr": "^1.8.2",
 		"@stripe/stripe-js": "^1.46.0",

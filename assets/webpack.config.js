@@ -21,7 +21,7 @@ const BUILD_DIR = path.resolve( __dirname, 'build' );
 
 const entry = {
 	public: JS_DIR + '/public.js',
-	admin: JS_DIR + '/admin.js',
+	// admin: JS_DIR + '/admin.js',
 	builder: JS_DIR + '/builder.js',
 	// widgets: JS_DIR + '/widgets.js',
 	// single: JS_DIR + '/single.js',
@@ -67,7 +67,7 @@ const rules = ( argv ) => [
 	{
 		test: /\.js$/,
 		include: [ JS_DIR ],
-		exclude: /node_modules/,
+		// exclude: /node_modules/,
 		use: {
 			loader: 'babel-loader',
 			options: {
@@ -77,7 +77,7 @@ const rules = ( argv ) => [
 	},
 	{
 		test: /\.((sc|c|sa)ss)$/, // /\.scss$/, // 
-		exclude: /node_modules/,
+		// exclude: /node_modules/,
 		use: [ MiniCssExtractPlugin.loader, 'css-loader', 'sass-loader' ]
 		// use: [
 		// 	{

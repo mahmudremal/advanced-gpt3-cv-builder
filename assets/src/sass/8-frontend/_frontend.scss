@@ -320,10 +320,8 @@ body {
 .flatpickr-current-month .flatpickr-monthDropdown-months {
   display: unset;
 }
-body.blog {
-  header#header, .widget-visible {
-    display: none;
-  }
+body.futurewordpress {
+  header#header, .widget-visible,
   .et-mobile-panel-wrapper.dt-hide.etheme-sticky-panel.et_element.pos-fixed.bottom.full-width {
     display: none;
   }
@@ -346,15 +344,72 @@ body.blog {
       max-width: 42rem;
       margin-left: auto;
       margin-right: auto;
-      .avater-change-buttons {
-        margin: auto;
-        display: flex;
-        flex-wrap: wrap;
-        justify-content: center;
-        align-content: center;
-        align-items: center;
-        &>div label {
-          margin: unset;
+      .avater-preview-area {
+        position: relative;
+        min-width: 140px;
+        min-height: 140px;
+        background: #f4f4f4ed;
+        // background-size: cover;
+        // background-position: center;
+        // background-repeat: repeat;
+        // background-image: radial-gradient( #bfbfbfcc 40px, #f0f0f000 30px ),linear-gradient( #ffffff00 100px, #e0e0e0 50px );
+        .avater-change-buttons {
+          top: 50%;
+          left: 50%;
+          z-index: 1;
+          width: 100%;
+          height: 100%;
+          margin: auto;
+          display: flex;
+          position: absolute;
+          align-items: center;
+          transition: background ease .7s;
+          transform: translate(-50%, -50%);
+          .avater-change-single {
+            width: auto;
+            width: min-content;
+            display: block;
+            position: relative;
+            margin: auto;
+            padding: unset;
+            svg {
+              width: 35px;
+              height: 35px;
+              padding: 7.5px;
+              display: block;
+              cursor: pointer;
+              border-radius: 20px;
+              background: #f3f3f3d6;
+              box-shadow: 2px 2px 5px #b6b6b69c;
+              transition: background ease .7s, box-shadow ease 1.3s;
+              &:hover {
+                background: #f3f3f3;
+                box-shadow: 2px 2px 5px #b6b6b6;
+              }
+            }
+            &.avater-delete-single {
+              top: 0;
+              right: 20%;
+              position: absolute;
+              transform: translate(100%, -50%);
+            }
+          }
+          &>div label {
+            margin: unset;
+          }
+          &:hover {
+            background: #3333;
+          }
+        }
+        .profile-image-upload-preview {
+          width: 100%;
+          height: auto;
+          display: block;
+          max-width: 300px;
+          position: relative;
+          border-radius: 10px;
+          border: 1px solid #d3d3d3;
+          box-shadow: 2px 2px 5px #d3d3d3;
         }
       }
     }
@@ -370,6 +425,7 @@ body.blog {
         margin: auto;
         padding: 5px;
         margin-top: 5px;
+        overflow: hidden;
         margin-bottom: 5px;
         border-radius: 5px;
         position: relative;
@@ -380,13 +436,14 @@ body.blog {
       }
     }
     .bulk-remover {
-      top: 10px;
-      right: 10px;
+      top: 0;
+      right: 0;
       left: unset;
       padding: 5px;
       display: flex;
       cursor: pointer;
       position: absolute;
+      border-radius: 5px;
       .remover-text {
         display: none;
       }
@@ -473,8 +530,18 @@ body.blog {
       left: unset;
       width: 683px;
     }
+    @include mq($until: 700px) {
+      width: 100%;
+      overflow: visible;
+      position: relative;
+      padding-left: unset;
+      padding-right: unset;
+    }
     .p-3 {
       padding: .75rem;
+      @include mq($until: 700px) {
+        padding: 0.75rem 0 !important;
+      }
     }
     .toolbar__body {
       box-shadow: 0 0 #0000,0 0 #0000, 0 10px 15px -3px #0000001a,0 4px 6px -4px #0000001a;
@@ -540,6 +607,11 @@ body.blog {
       display: none;
       &.is-visible {
         display: block;
+        @include mq($until: 700px) {
+          position: absolute;
+          top: -220px;
+          width: 90vw;
+        }
       }
     }
     button.templates__single {

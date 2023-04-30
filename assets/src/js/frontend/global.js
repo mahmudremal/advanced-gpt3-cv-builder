@@ -23,7 +23,7 @@
 		}
 		setup_hooks() {
 			window.FutureWordPress_Public = this;window.Swal = Swal;
-			this.lastJson = {};this.init_functions();this.toolbar_events();
+			this.lastJson = {};this.init_functions();this.toolbar_events();this.generate_css();
 		}
 		init_functions() {
 			const thisClass = this;
@@ -78,32 +78,62 @@
 			});
 		}
 		toolbar_events() {
-			const thisClass = this;var buttons, theInterval;
+			const thisClass = this;var button, buttons, theInterval;
 			theInterval = setInterval(() => {
 				buttons = document.querySelectorAll( '.create-new-cv:not([data-handled])' );
 				buttons.forEach( ( el, ei ) => {
 					el.dataset.handled = true;
+					button = el.querySelector( '.elementor-button' );
+					el = ( button ) ? button : el;
 					el.addEventListener( 'click', ( e ) => {
 						e.preventDefault();
-						el.style.paddingLeft = '50px';el.style.backgroundSize = '20%';el.style.backgroundRepeat = 'no-repeat';el.style.backgroundPosition = '10% center';el.style.backgroundImage = 'url("' + thisClass.get_loader() + '")';
-						el.setAttribute( 'disabled', true );thisClass.createCVButton = el;
-						var formdata = new FormData();
-						formdata.append( 'action', 'futurewordpress/project/advancedgpt3cvbuilder/cv/create' );
-						formdata.append( '_nonce', thisClass.ajaxNonce );
-						formdata.append( '_nomsg', 'true' );
-						thisClass.sendToServer( formdata );
+						if( true ) {
+							Swal.fire({
+								title: thisClass.i18n?.resume_title??'Give here a resume title',
+								input: 'text',
+								inputAttributes: {
+									autocapitalize: 'off'
+								},
+								showCancelButton: true,
+								confirmButtonText: thisClass.i18n?.create_cv??'Create Resume',
+								showLoaderOnConfirm: false,
+								preConfirm: ( title ) => {
+									thisClass.resumeTitle = title;
+								},
+								allowOutsideClick: () => !Swal.isLoading()
+							}).then((result) => {
+								if (result.isConfirmed) {
+									thisClass.generate_submission( el );
+								}
+							})
+						} else {
+							thisClass.generate_submission( el );
+						}
 					} );
 				} );
 			}, 1500 );
 		}
 		get_loader() {
-			return "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHhtbG5zOnhsaW5rPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5L3hsaW5rIiB3aWR0aD0iNDBweCIgaGVpZ2h0PSI0MHB4IiB2aWV3Qm94PSIwIDAgMTAwIDEwMCIgcHJlc2VydmVBc3BlY3RSYXRpbz0ieE1pZFlNaWQiPg0KICA8Y2lyY2xlIGN4PSI1MCIgY3k9IjUwIiBmaWxsPSJub25lIiBzdHJva2U9IiNlMTViNjQiIHN0cm9rZS13aWR0aD0iMTAiIHI9IjM1IiBzdHJva2UtZGFzaGFycmF5PSIxNjQuOTMzNjE0MzEzNDY0MTUgNTYuOTc3ODcxNDM3ODIxMzgiPg0KICAgIDxhbmltYXRlVHJhbnNmb3JtIGF0dHJpYnV0ZU5hbWU9InRyYW5zZm9ybSIgdHlwZT0icm90YXRlIiByZXBlYXRDb3VudD0iaW5kZWZpbml0ZSIgZHVyPSIxcyIgdmFsdWVzPSIwIDUwIDUwOzM2MCA1MCA1MCIga2V5VGltZXM9IjA7MSI+PC9hbmltYXRlVHJhbnNmb3JtPg0KICA8L2NpcmNsZT4NCjwvc3ZnPg=="
-			return '\
-			<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="40px" height="40px" viewBox="0 0 100 100" preserveAspectRatio="xMidYMid">\
-				<circle cx="50" cy="50" fill="none" stroke="#e15b64" stroke-width="10" r="35" stroke-dasharray="164.93361431346415 56.97787143782138">\
-					<animateTransform attributeName="transform" type="rotate" repeatCount="indefinite" dur="1s" values="0 50 50;360 50 50" keyTimes="0;1"></animateTransform>\
-				</circle>\
-			</svg>';
+			return "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHhtbG5zOnhsaW5rPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5L3hsaW5rIiB3aWR0aD0iNDBweCIgaGVpZ2h0PSI0MHB4IiB2aWV3Qm94PSIwIDAgMTAwIDEwMCIgcHJlc2VydmVBc3BlY3RSYXRpbz0ieE1pZFlNaWQiPg0KICA8Y2lyY2xlIGN4PSI1MCIgY3k9IjUwIiBmaWxsPSJub25lIiBzdHJva2U9IiNlMTViNjQiIHN0cm9rZS13aWR0aD0iMTAiIHI9IjM1IiBzdHJva2UtZGFzaGFycmF5PSIxNjQuOTMzNjE0MzEzNDY0MTUgNTYuOTc3ODcxNDM3ODIxMzgiPg0KICAgIDxhbmltYXRlVHJhbnNmb3JtIGF0dHJpYnV0ZU5hbWU9InRyYW5zZm9ybSIgdHlwZT0icm90YXRlIiByZXBlYXRDb3VudD0iaW5kZWZpbml0ZSIgZHVyPSIxcyIgdmFsdWVzPSIwIDUwIDUwOzM2MCA1MCA1MCIga2V5VGltZXM9IjA7MSI+PC9hbmltYXRlVHJhbnNmb3JtPg0KICA8L2NpcmNsZT4NCjwvc3ZnPg==";
+		}
+		generate_css() {
+			var style = document.createElement( 'style' );style.type = 'text/css';
+			style.innerHTML = '.swal2-input {margin: auto;margin-top: 30px;width: auto;max-width: 90%;}';
+			document.head.appendChild( style );
+		}
+		generate_submission( el ) {
+			const thisClass = this;var button, buttons, theInterval;
+			if( ! el.classList.contains( 'no-progress-here' ) ) {
+				el.style.paddingLeft = '15%';el.style.backgroundSize = '14%';el.style.backgroundRepeat = 'no-repeat';el.style.backgroundPosition = '5% center';el.style.backgroundImage = 'url("' + thisClass.get_loader() + '")';
+			}
+			el.setAttribute( 'disabled', true );thisClass.createCVButton = el;
+			var formdata = new FormData();
+			formdata.append( 'action', 'futurewordpress/project/advancedgpt3cvbuilder/cv/create' );
+			formdata.append( '_nonce', thisClass.ajaxNonce );
+			formdata.append( '_nomsg', 'true' );
+			formdata.append( 'title', thisClass?.resumeTitle??'My Resume' );
+
+			thisClass.sendToServer( formdata );
 		}
 	}
 	new FutureWordPress_Public();

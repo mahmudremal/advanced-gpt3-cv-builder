@@ -1,0 +1,16 @@
+.git
+-temp--.gitignore
+-temp--languages
+# -temp--.vscode
+node_modules
+build
+-temp--.babelrc
+-temp--.eslintignore
+-temp--.eslintrc.json
+-temp--.nvmrc
+.env
+-temp--.stylelintrc.json
+-temp--package-lock.json
+-temp--data-package.json
+-temp--webpack.config.js
+new-folder
