@@ -14,6 +14,8 @@ class Post_Types {
 	}
 	protected function setup_hooks() {
 		add_action( 'init', [ $this, 'create_cv_cpt' ], 0 );
+		add_filter( 'get_edit_post_link', [ $this, 'get_edit_post_link' ], 10, 3 );
+		add_filter( 'post_link', [ $this, 'post_link' ], 10, 3 );
 	}
 	// Register Custom Post Type Resume
 	public function create_cv_cpt() {
@@ -79,6 +81,18 @@ class Post_Types {
 			'capability_type'     => 'post',
 		];
 		register_post_type( 'resume', $args );
+	}
+	public function get_edit_post_link( $link, $post_id, $context ) {
+		if( get_post_type( $post_id ) == 'resume' ) {
+			$link = site_url( '/app/resumes/' . $post_id . '/edit/' );
+		}
+		return $link;
+	}
+	public function post_link( $permalink, $post, $leavename ) {
+		if( get_post_type( $post->ID ) == 'resume' ) {
+			$permalink = site_url( '/app/resumes/' . $post->ID . '/edit/' );
+		}
+		return $permalink;
 	}
 
 }
